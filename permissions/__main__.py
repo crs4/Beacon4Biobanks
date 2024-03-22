@@ -1,8 +1,6 @@
 """
 Dummy permissions server
-
 We hard-code the dataset permissions.
-
 """
 import logging
 from typing import Optional
@@ -21,9 +19,9 @@ from .plugins import DummyPermissions as PermissionsProxy
 
 LOG = logging.getLogger(__name__)
 
-@bearer_required
-async def permission(request: Request, username: Optional[str], list_visa_datasets: Optional [list]):
 
+@bearer_required
+async def permission(request: Request, username: Optional[str]):
     if request.headers.get('Content-Type') == 'application/json':
         post_data = await request.json()
     else:
@@ -39,20 +37,13 @@ async def permission(request: Request, username: Optional[str], list_visa_datase
         requested_datasets = []
     else:
         requested_datasets = v.split(sep=',')  # type: ignore
-        
+
     LOG.debug('requested datasets: %s', requested_datasets)
     datasets = await request.app['permissions'].get(username, requested_datasets=requested_datasets)
     LOG.debug('selected datasets: %s', datasets)
-    dict_returned={}
-    dict_returned['username']=username
-    datasets=list(datasets)
-    LOG.error('visa_datasets: {}'.format(list_visa_datasets))
-    for visa_dataset in list_visa_datasets:
-        datasets.append(visa_dataset)
-    dict_returned['datasets']=list(datasets)
-    LOG.error(dict_returned['datasets'])
 
-    return web.json_response(dict_returned) # cuz python-json doesn't like sets
+    return web.json_response(list(datasets or []))  # cuz python-json doesn't like sets
+
 
 async def initialize(app):
     """Initialize server."""
@@ -60,14 +51,14 @@ async def initialize(app):
     await app['permissions'].initialize()
     LOG.info("Initialization done.")
 
+
 async def destroy(app):
     """Upon server close, close the DB connections."""
     LOG.info("Shutting down.")
     await app['permissions'].close()
-    
+
 
 def main(path=None):
-
     load_logger()
 
     # Configure the permissions server
@@ -80,7 +71,7 @@ def main(path=None):
     server.add_routes([web.post('/', permission)]) # type: ignore
 
     cors = aiohttp_cors.setup(server, defaults={
-    "https://beacon-network-test.ega-archive.org": aiohttp_cors.ResourceOptions(
+    "http://localhost:3000": aiohttp_cors.ResourceOptions(
             allow_credentials=True,
             expose_headers="*",
             allow_methods=("POST", "PATCH", "GET", "OPTIONS"),
@@ -98,5 +89,3 @@ def main(path=None):
 
 if __name__ == '__main__':
     main()
-
-
