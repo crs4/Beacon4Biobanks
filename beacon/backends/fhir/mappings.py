@@ -1,0 +1,307 @@
+"""
+Filtering terms to support for biosamples:
+
+Diagnosis: (Ontology) Orphanet or ICD and it queries "Sample content diagnosis" field of the Specimen resource
+Sex: Decide whether to use ontology or alphanumeric as for the individuals
+    - (Ontology) using (OBO:NCIT_C16576, OBO:NCIT_C20197, OBO:NCIT_C124294, OBO:NCIT_C17998)
+    - Alphanumeric: in this case the id would be obo:NCIT_C28421
+Specimen type: (Alphanumeric) id = obo:NCIT_C70713 and values taken from MIABIS
+Age at diagnosis: (Alphanumeric) id = obo:NCIT_C156420, operator and value
+"""
+
+import logging
+
+from aiohttp.web_exceptions import HTTPBadRequest
+
+_PREFIXES_TO_EXTENDED = {
+    'FastingStatus': 'http://terminology.hl7.org/CodeSystem/v2-0916',
+    'SampleMaterialType': 'https://fhir.bbmri.de/CodeSystem/SampleMaterialType',
+    'icd10': 'http://hl7.org/fhir/sid/icd-10',
+    'icd10gm': 'http://fhir.de/CodeSystem/dimdi/icd-10-gm',
+    'loinc': 'http://loinc.org',
+    'ordo': 'http://www.orpha.net/ORDO/',
+    'uberon': 'http://purl.obolibrary.org/obo/uberon.owl',
+    'StorageTemperature': 'https://fhir.bbmri.de/CodeSystem/StorageTemperature',
+    'icd-o-3': 'urn:oid:2.16.840.1.113883.6.43.1'
+}
+
+_EXTENDED_TO_PREFIXES = {v: k for k, v in _PREFIXES_TO_EXTENDED.items()}
+
+_FILTERS = [{
+    'id': 'icd10',
+    'type': 'ontology',
+    'label': 'Disease using an icd10 code (e.g., icd10:G18.0)',
+    'scope': ['biosamples', 'individuals']
+}, {
+    'id': 'ordo',
+    'type': 'ontology',
+    'label': 'Disease using an orphanet code (e.g., ordo:Orphanet_589)',
+    'scope': ['biosamples', 'individuals']
+}, {
+    'id': 'obo:NCIT_C28421',
+    'type': 'alphanumeric',
+    'label': 'Sex',
+    'scope': ['biosamples', 'individuals'],
+    'allowed_values': [
+        'obo:NCIT_C16576',  # Female
+        'obo:NCIT_C20197',  # Male
+        'obo:NCIT_C124294',
+        'obo:NCIT_C17998',
+    ]
+}, {
+    'id': 'obo:NCIT_C156420',
+    'type': 'alphanumeric',
+    'label': 'Age at diagnosis',
+    'scope': ['biosample', 'individual']
+}, {
+    'id': 'obo:NCIT_C83164',
+    'type': 'alphanumeric',
+    'label': 'Year of birth',
+    'scope': ['biosamples', 'individuals']
+}, {
+    'id': 'obo:NCIT_C70713',
+    'type': 'alphanumeric',
+    'label': 'Biospecimen type',
+    'allowed_values': [
+        'OBI_0000655',  # (blood specimen)
+        'OBI_0002512',  # (bone marrow)
+        'OBIB_0000036',  # (buffy coat)
+        'CL_2000001',  # (peripheral blood mononuclear cell)
+        'OBI_0100016',  # (blood plasma specime)
+        'OBI_0100017',  # (blood serum)
+        'UBERON_0007795',  # (ascites fluid)
+        'OBI_0002502',  # (cerebrospinal fluid)
+        'OBI_0002507',  # (saliva)
+        'OBI_0002503',  # (feces)
+        'OBI_0000651',  # (urine)
+        'OBI_0002599',  # (swab)
+        'OBI_2000009',  # (bodily fluid specimen)
+        'OBI_1200000',  # (FFPE specimen)
+        'OBI_0000922',  # (frozen specimen)
+        'OBI_0001472',  # (specimen with known storage state)
+        'OBI_0001051',  # (DNA extract)
+        'OBI_0000880',  # (RNA extract)
+        'OBI_0001479',  # (specimen from organism)
+    ]
+}, {
+    'id': 'whole-blood',
+    'label': 'Whole blood',
+    'type': 'custom'
+}, {
+    'id': 'bone-marrow',
+    'label': 'Bone marrow',
+    'type': 'custom'
+}, {
+    'id': 'buffy-coat',
+    'label': 'Buffy-Coat',
+    'type': 'custom'
+}, {
+    'id': 'dried-whole-blood',
+    'label': 'Dried whole blood',
+    'type': 'custom'
+}, {
+    'id': 'peripheral-blood-cells-vital',
+    'label': 'Peripheral blood mononuclear cells (PBMCs, viable)',
+    'type': 'custom'
+}, {
+    'id': 'blood-plasma',
+    'label': 'Plasma',
+    'type': 'custom'
+}, {
+    'id': 'plasma-edta',
+    'label': 'Plasma, EDTA',
+    'type': 'custom'
+}, {
+    'id': 'plasma-citrat',
+    'label': 'Plasma, Citrat',
+    'type': 'custom'
+}, {
+    'id': 'plasma-heparin',
+    'label': 'Plasma, Heparin',
+    'type': 'custom'
+}, {
+    'id': 'plasma-cell-free',
+    'label': 'Plasma, cell free',
+    'type': 'custom'
+}, {
+    'id': 'plasma-other',
+    'label': 'Plasma, other',
+    'type': 'custom'
+}, {
+    'id': 'blood-serum',
+    'label': 'Serum',
+    'type': 'custom'
+}, {
+    'id': 'ascites',
+    'label': 'Ascites',
+    'type': 'custom'
+}, {
+    'id': 'csf-liquor',
+    'label': 'CSF/Liquor',
+    'type': 'custom'
+}, {
+    'id': 'saliva',
+    'label': 'Saliva',
+    'type': 'custom'
+}, {
+    'id': 'stool-faeces',
+    'label': 'Stool/Faeces',
+    'type': 'custom'
+}, {
+    'id': 'urine',
+    'label': 'Urine',
+    'type': 'custom'
+}, {
+    'id': 'swab',
+    'label': 'Swab',
+    'type': 'custom'
+}, {
+    'id': 'liquid-other',
+    'label': 'Other liquid biosample/storage',
+    'type': 'custom'
+}, {
+    'id': 'tissue-ffpe',
+    'label': 'Tissue FFPE',
+    'type': 'custom'
+}, {
+    'id': 'tumor-tissue-ffpe',
+    'label': 'Tumor tissue (FFPE)',
+    'type': 'custom'
+}, {
+    'id': 'normal-tissue-ffpe',
+    'label': 'Normal tissue (FFPE)',
+    'type': 'custom'
+}, {
+    'id': 'other-tissue-ffpe',
+    'label': 'Other tissue (FFPE)',
+    'type': 'custom'
+}, {
+    'id': 'tissue-frozen',
+    'label': 'Tissue frozen',
+    'type': 'custom'
+}, {
+    'id': 'tumor-tissue-frozen',
+    'label': 'Tumor tissue (frozen)',
+    'type': 'custom'
+}, {
+    'id': 'normal-tissue-frozen',
+    'label': 'Normal tissue (frozen)',
+    'type': 'custom'
+}, {
+    'id': 'other-tissue-frozen',
+    'label': 'Other tissue (frozen)',
+    'type': 'custom'
+}, {
+    'id': 'tissue-other',
+    'label': 'Other tissue storage',
+    'type': 'custom'
+}, {
+    'id': 'dna',
+    'label': 'DNA',
+    'type': 'custom'
+}, {
+    'id': 'cf-dna',
+    'label': 'cfDNA',
+    'type': 'custom'
+}, {
+    'id': 'g-dna',
+    'label': 'gDNA',
+    'type': 'custom'
+}, {
+    'id': 'rna',
+    'label': 'RNA',
+    'type': 'custom'
+}, {
+    'id': 'derivative-other',
+    'label': 'Other derivative',
+    'type': 'custom'
+}]
+
+_FILTERS_TO_CQL = {
+    'icd10': {
+        'cql_parameter_class': 'diagnosis',
+        'type': 'ontology',
+        'extension': ''
+    },
+    'ordo': {
+        'cql_parameter_class': 'diagnosis',
+        'type': 'ontology',
+        'extension': ''
+    },
+    'obo:NCIT_C28421': {
+        'cql_parameter_class': 'sex',
+        'type': 'alphanumeric',
+        'extension': '',
+        'values_mapper': lambda v: {
+            'obo:NCIT_C16576': 'female',  # female
+            'obo:NCIT_C20197': 'male',  # male
+            'obo:NCIT_C124294': 'other',  # undetermined
+            'obo:NCIT_C17998': 'unknown',  # other
+        }[v]
+    },
+    'obo:NCIT_C156420': {
+        'cql_parameter_class': 'age_at_diagnosis',
+        'type': 'alphanumeric',
+        'values_mapper': lambda v: v
+    },
+    'obo:NCIT_C83164': {
+        'cql_parameter_class': 'year_of_birth',
+        'type': 'alphanumeric',
+        'values_mapper': lambda v: v
+    },
+    'obo:NCIT_C70713': {
+        'cql_parameter_class': 'sample_type',
+        'type': 'alphanumeric',
+        'fhir_codesystem': 'SampleMaterialType',
+        'values_mapper': lambda v: {
+            'OBI_0000655': ['whole-blood', 'dried-whole-blood'],  # (blood specimen)
+            'OBI_0002512': 'bone-marrow',  # (bone marrow)
+            'OBIB_0000036': 'buffy-coat',  # (buffy coat)
+            'CL_2000001': 'peripheral-blood-cells-vital',  # (peripheral blood mononuclear cell)
+            'OBI_0100016': ['blood-plasma', 'plasma-edta', 'plasma-citrat', 'plasma-heparin', 'plasma-cell-free',
+                            'plasma-other'],  # (blood plasma specimen)
+            'OBI_0100017': 'blood-serum',  # (blood serum)
+            'UBERON_0007795': 'ascites',  # (ascites fluid)
+            'OBI_0002502': 'csf-liquor',  # (cerebrospinal fluid)
+            'OBI_0002507': 'saliva',  # (saliva)
+            'OBI_0002503': 'stool-faeces',  # (feces)
+            'OBI_0000651': 'urine',  # (urine)
+            'OBI_0002599': 'swab',  # (swab)
+            'OBI_2000009': 'liquid-other',  # (bodily fluid specimen)
+            'OBI_1200000': ['tissue-ffpe', 'tumor-tissue-ffpe', 'normal-tissue-ffpe', 'other-tissue-ffpe'],
+            # (FFPE specimen)
+            'OBI_0000922': ['tissue-frozen', 'tumor-tissue-frozen', 'normal-tissue-frozen', 'other-tissue-frozen'],
+            'OBI_0001472': 'tissue-other',  # (specimen with known storage state)
+            'OBI_0001051': ['dna', 'cf-dna', 'g-dna'],  # (DNA extract)
+            'OBI_0000880': 'rna',  # (RNA extract)
+            'OBI_0001479': 'derivative-other',  # (specimen from organism)
+        }[v]
+    }
+}
+
+_FHIR_EXTENSIONS_TO_BEACON = {
+    'https://fhir.bbmri.de/StructureDefinition/StorageTemperature': 'measurements',
+    'https://fhir.bbmri.de/StructureDefinition/SampleDiagnosis': 'histologicalDiagnosis',
+    # 'https://fhir.bbmri.de/StructureDefinition/Custodian': 'custodian'
+}
+
+
+def get_codesystem_prefix(extended):
+    LOG = logging.getLogger(__name__)
+    LOG.debug("requiring_code: %s", extended)
+    return _EXTENDED_TO_PREFIXES[extended]
+
+
+def get_filters():
+    return _FILTERS
+
+
+def get_cql_condition_arguments_from_beacon_filter(beacon_filter):
+    try:
+        return _FILTERS_TO_CQL[beacon_filter]
+    except KeyError:
+        raise HTTPBadRequest(text="Filter not supported")
+
+
+def get_beacon_code_from_fhir_extension(extension):
+    return _FHIR_EXTENSIONS_TO_BEACON[extension]

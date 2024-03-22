@@ -1,11 +1,14 @@
 import logging
-from typing_extensions import Self
-from pydantic import BaseModel
-from strenum import StrEnum
-from typing import List, Optional, Union
-from beacon import conf
-from humps.main import camelize
+from typing import List
+from typing import Optional, Union
+
 from aiohttp.web_request import Request
+from humps import camelize
+from pydantic.v1 import BaseModel
+from strenum import StrEnum
+from typing_extensions import Self
+
+from beacon import conf
 
 LOG = logging.getLogger(__name__)
 
@@ -38,13 +41,15 @@ class Operator(StrEnum):
     LESS_EQUAL = "<=",
     GREATER_EQUAL = ">="
 
+
 class Granularity(StrEnum):
     BOOLEAN = "boolean",
     COUNT = "count",
     RECORD = "record"
 
+
 class OntologyFilter(CamelModel):
-    id: str
+    id: Union[str, List[str]]
     scope: Optional[str] = None
     include_descendant_terms: bool = False
     similarity: Similarity = Similarity.EXACT
@@ -52,34 +57,33 @@ class OntologyFilter(CamelModel):
 
 class AlphanumericFilter(CamelModel):
     id: str
-    value: Union[str, List[int]]
+    value: Union[str, int, List[str], List[int]]
     scope: Optional[str] = None
     operator: Operator = Operator.EQUAL
 
 
 class CustomFilter(CamelModel):
-    id: str
+    id: Union[str, List[str]]
     scope: Optional[str] = None
 
 
 class Pagination(CamelModel):
     skip: int = 0
-    limit: int = 10
+    limit: int = conf.service.default_number_of_items_per_request
 
 
 class RequestMeta(CamelModel):
     requested_schemas: List[str] = []
-    api_version: str = conf.api_version
+    api_version: str = conf.beacon.api_version
 
 
 class RequestQuery(CamelModel):
     filters: List[dict] = []
     include_resultset_responses: IncludeResultsetResponses = IncludeResultsetResponses.HIT
     pagination: Pagination = Pagination()
-    request_parameters: Union[list,dict] = {}
+    request_parameters: dict = {}
     test_mode: bool = False
-    requested_granularity: Granularity = Granularity(conf.default_beacon_granularity)
-    scope: str = None
+    requested_granularity: Granularity = Granularity(conf.service.default_beacon_granularity)
 
 
 class RequestParams(CamelModel):
@@ -102,17 +106,10 @@ class RequestParams(CamelModel):
         return self
 
     def summary(self):
-        list_of_filters=[]
-        for item in self.query.filters:
-            for k,v in item.items():
-                if v not in list_of_filters:
-                    list_of_filters.append(v)
-        #reqparams=self.query.request_parameters
-        #del reqparams["filters"]
         return {
             "apiVersion": self.meta.api_version,
             "requestedSchemas": self.meta.requested_schemas,
-            "filters": list_of_filters,
+            "filters": self.query.filters,
             "requestParameters": self.query.request_parameters,
             "includeResultsetResponses": self.query.include_resultset_responses,
             "pagination": self.query.pagination.dict(),
