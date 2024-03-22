@@ -18,10 +18,12 @@ if sys.version_info < (3, 7):
 # The warnings are logged to a logger named 'py.warnings' with a severity of WARNING.
 # See: https://docs.python.org/3/library/logging.html#integration-with-the-warnings-module
 import logging
+import dataconf
 import warnings
 from logging.config import dictConfig
 from pathlib import Path
 import yaml
+from beacon.config import BeaconConfig
 
 logging.captureWarnings(True)
 warnings.simplefilter("default")  # do not ignore Deprecation Warnings
@@ -31,3 +33,11 @@ def load_logger():
     log_file = Path(__file__).parent / "logger.yml"
     with open(log_file, 'r') as stream:
         dictConfig(yaml.safe_load(stream))
+
+
+conf = None
+
+
+def load_config(conf_file):
+    global conf
+    conf = dataconf.load(conf_file, BeaconConfig)
