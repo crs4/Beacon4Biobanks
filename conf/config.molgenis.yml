@@ -1,0 +1,40 @@
+service:
+  backend: molgenis
+  schemas: ejprd
+  default_beacon_granularity: record
+  max_beacon_granularity: record
+  default_number_of_items_per_request: 100
+  documentation_url: "https://github.com/crs4/Beacon4Biobanks"
+  environment: "test"
+  entry_types:
+    - type: resource
+      default_schema: "ejprd-resources-v1.0.0"
+ga4gh:
+  service_type_group: org.ga4gh
+  service_type_artifact: beacon
+  service_type_version: "1.0"
+beacon:
+  beacon_id: ""
+  beacon_name: ""
+  api_version: "v2.0.0"
+  uri: ""
+organization:
+  id: ""
+  name: ""
+  address: ""
+  description: ""
+  welcome_url: ""
+  contact_url: ""
+  logo_url: ""
+project:
+  description: ""
+  version: "2.0"
+  welcome_url: ""
+  alternative_url: ""
+  create_datetime: ""
+  update_datetime: ""
+molgenis:
+  url: ""
+  user: ""
+  password: ""
+  base_resource_url: ""

@@ -1,0 +1,48 @@
+service:
+  backend: fhir
+  schemas: ejprd
+  default_beacon_granularity: count
+  max_beacon_granularity: count
+  default_number_of_items_per_request: 100
+  auth_key: null
+  documentation_url: "https://github.com/crs4/Beacon4Biobanks"
+  environment: "test"
+  entry_types:
+    - type: biosample
+      default_schema: "beacon-biosample-v2.0.0"
+    - type: individual
+      default_schema: "beacon-individual-v2.0.0"
+  handovers: [ ]
+ga4gh:
+  service_type_group: 'org.ga4gh'
+  service_type_artifact: 'beacon'
+  service_type_version: '1.0'
+beacon:
+  beacon_id: "" # for examples use `beacon.<biobank_id>`
+  beacon_name: ""
+  api_version: "v2.0.0"
+  uri: ""
+organization: # Information about the biobank that is exposing the beacon
+  id: ""
+  name: ""
+  address: ""
+  description: ""
+  welcome_url: ""
+  contact_url: ""
+  logo_url: ""
+  info: ""
+project:
+  description: ""
+  version: "2.0"
+  welcome_url: ""
+  alternative_url: ""
+  create_datetime: ""
+  update_datetime: ""
+fhir:
+  url: ""
+  user: null
+  password: null
+idp:
+  user_info_url: ""
+  jwk_set_url: ""
+  issuer: ""
