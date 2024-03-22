@@ -2,9 +2,5 @@
 .gitignore
 LICENSE
 README.md
-deploy/db
 tests
-node_modules
-frontend/node_modules
-frontend2/node_modules
-deploy/cancer_dataset
+venv

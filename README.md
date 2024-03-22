@@ -2,48 +2,52 @@
 
 <!-- [![Testsuite](https://github.com/EGA-archive/beacon-2.x/workflows/Testsuite/badge.svg)](https://github.com/EGA-archive/beacon-2.x/actions) -->
 
-This repository is an implementation of the [Beacon v2.0 Model](https://github.com/ga4gh-beacon/beacon-v2-Models) and contains:
+This repository is an implementation of the [Beacon v2.0 Model](https://github.com/ga4gh-beacon/beacon-v2-Models) and 
+extends the [Reference Implementation](https://github.com/EGA-archive/beacon2-ri-api) by implementing a [FHIR](https://hl7.org/fhir/)
+endpoint that allows to query /individuals and /biosamples endpoints from a FHIR Store that contains data represented as
+FHIR Resources compliant with the [BBMRI Sample Locator](https://samply.github.io/bbmri-fhir-ig/overview.html) model.
 
-* The (Python 3.9+) [source code for beacon](beacon),
-* A MongoDB database with sample data to demo the capabilities of the Beacon API.
-* AAI and LS-AAI integrated.
+For the deployment and the documentation of the Beacon reference implementation please refer to the main [repository](https://github.com/EGA-archive/beacon2-ri-api).
+
+Here only the deployment with a FHIR backend is documented
+
+## Deployment
+
+To deploy a Beacon service that queries data from a FHIR store, it is possible to use Docker.
+
+### Conf file
+
+The docker image needs a configuration file mounted at `/beacon/config.yml` path of the container
+
+To create a `config.yml` file, use the `conf/config.fhir.yml` template and edit it
+with the information of your beacon. 
+
+In particular fill:
+  - **Info section**: just some data about the beacon
+  - **Organization**: information about the organization that is exposing the beacon
+  - **Project Info**:
+  - **FHIR Store Info**: connection parameters of the FHIR Store to use as backend
+
+### Environment variables
+
+Three environment variables, all related to Nginx, must be set:
+  - SERVER_NAME: same as Nginx's server name directive
+  - PORT: the port used for the service
+  - SSL_ENABLED: true or false to enable SSL (recommended)
+
+### SSL
+
+In case SSL is enabled, the key-certificate pair must be mounted on `/etc/ssl/certs/beacon.key` and 
+`/etc/ssl/certs/beacon.cert`  
+
+### Example
+
+The  `/deploy/docker-compose.fhir.yaml` is an example that deploy a Beacon and the FHIR store to query.
+
+An example of a standalone Beacon service that queries an external FHIR store is:
+
+`docker run -e SERVER_NAME=beacon -e PORT=5050 -e SSL_ENABLED=false -v <conf-file>:/beacon/beacon/conf.py -p 5050:5050 crs4/beacon:2.0-fhir`
 
 
-> [Local deployment instructions](deploy/README.md)
-
-> [Frontend usage instructions](frontend/README.md)
-
-### Managing AAI-LSAAI permissions
-
-To give the right permissions for AAI you will need to set the permissions of the users inside permissions folder, within the [public_datasets.yml](permissions/public_datasets.yml), [registered_datasets.yml](permissions/registered_datasets.yml), [controlled_datasets.yml](permissions/controlled_datasets.yml) files, or run the beacon admin page that allows you to manage all the permissions in a friendly way and no need to open .yml files. Just start the UI, that will run in http://localhost:8010, by executing this command from the deploy folder after the containers are up and running:
-```bash
-docker exec beacon-permissions bash permissions/permissions-ui/start.sh
-```
-Please, bear in mind that the name of the user has to be the same that you used when creating the user in LS or in IDP, whatever the AAI method you are working with.
-To give a user a certain type of response for their queries, please modify this file [response_type.yml](https://github.com/EGA-archive/beacon2-ri-api/blob/master/beacon/request/response_type.yml) adding the maximum type of response you want to allow every user.
-
-Also, you will need to edit the file [conf.py](beacon/conf.py) and introduce the domain where your keycloak is being hosted inside **ldp_user_info** and the issuers you trust for your token inside **trusted_issuers**. In case you want to run your local container, use this configuration:
-```bash
-idp_user_info = 'http://idp:8080/auth/realms/Beacon/protocol/openid-connect/userinfo'
-lsaai_user_info = 'https://login.elixir-czech.org/oidc/userinfo'
-trusted_issuers = ['http://idp:8080/auth/realms/Beacon', 'https://login.elixir-czech.org/oidc/']
-```
-
-When you have your access token, pass it in a header with **Authorization: Bearer** in your POST request to get your answers. This token works coming from either from LS AAI or from keycloak (idp container).
-
-### Beacon security system
-
-![Beacon security](https://github.com/EGA-archive/beacon2-ri-api/blob/develop/deploy/beacon_security.png?raw=true)
-
-### Version notes
-
-* Fusions (`mateName`) are not supported.
 
 
-### Acknowlegments
-
-We thank the [CSC Finland](https://www.csc.fi/) team for their
-contribution with a [python implementing of version
-1](https://github.com/CSCfi/beacon-python). They, in turn, got help
-from members of [NBIS](https://nbis.se/) and
-[DDBJ](https://www.ddbj.nig.ac.jp).

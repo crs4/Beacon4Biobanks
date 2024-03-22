@@ -31,6 +31,7 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
+.pytest_cache
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -114,7 +115,7 @@ venv.bak/
 /ui/grunt
 
 # Tests tmp
-/tests/tmp/
+/test/tmp/
 
 # IntelliJ
 .idea/
@@ -128,12 +129,3 @@ typings/
 deploy/ontologies/*.obo
 deploy/ontologies/*.owl*
 .antlr/
-
-alternate_docker_compose_ls.yml
-frontend3
-
-node_modules
-
-genomicVariations_full.json
-genomicVariations_id.json
-deploy/cancer_dataset
