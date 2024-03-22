@@ -10,7 +10,7 @@ loggers:
     level: DEBUG
     handlers: [ console ]
   beacon:
-    level: DEBUG
+    level: INFO
     handlers: [ console ]
     propagate: True
   aiohttp:
