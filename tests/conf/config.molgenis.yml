@@ -1,0 +1,40 @@
+service:
+  backend: molgenis
+  schemas: ejprd
+  default_beacon_granularity: record
+  max_beacon_granularity: record
+  default_number_of_items_per_request: 100
+  documentation_url: https://github.com/EGA-archive/beacon-2.x/
+  environment: "test"
+  entry_types:
+  - type: resource
+    default_schema: "ejprd-resources-v0.3"
+ga4gh:
+  service_type_group: org.ga4gh
+  service_type_artifact: beacon
+  service_type_version: "1.0"
+beacon:
+  beacon_id: ""
+  beacon_name: ""
+  api_version: "v2.0.0"
+  uri: ""
+organization:
+  id: ""
+  name: ""
+  address: ""
+  description: ""
+  welcome_url: ""
+  contact_url: ""
+  logo_url: ""
+project:
+  description: ""
+  version: "2.0"
+  welcome_url: ""
+  alternative_url: ""
+  create_datetime: ""
+  update_datetime: ""
+molgenis:
+  url: "http://172.17.0.1:8080"
+  user: "admin"
+  password: "admin"
+  base_resource_url: "https://molgenis/#/collection"

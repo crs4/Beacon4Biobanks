@@ -1,0 +1,203 @@
+{
+  "entry": [
+    {
+      "request": {
+        "method": "PUT",
+        "url": "Patient/case-5"
+      },
+      "resource": {
+        "id": "case-5",
+        "meta": {
+          "profile": [
+            "https://fhir.bbmri.de/StructureDefinition/Patient"
+          ]
+        },
+        "gender": "male",
+        "identifier": [
+          {
+            "value": "case:5"
+          }
+        ],
+        "resourceType": "Patient"
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "url": "Condition/case-5-condition-730"
+      },
+      "resource": {
+        "id": "case-5-condition-730",
+        "meta": {
+          "profile": [
+            "https://fhir.bbmri.de/StructureDefinition/Condition"
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "code": "Orphanet_730",
+              "system": "http://www.orpha.net/ORDO/"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/case-5"
+        },
+        "resourceType": "Condition"
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "url": "Specimen/case-5-specimen-1"
+      },
+      "resource": {
+        "id": "case-5-specimen-1",
+        "meta": {
+          "profile": [
+            "https://fhir.bbmri.de/StructureDefinition/Specimen"
+          ]
+        },
+        "extension": [
+          {
+            "url": "https://fhir.bbmri.de/StructureDefinition/Custodian",
+            "valueReference": {
+              "identifier": {
+                "system": "https://test-assigning-authority",
+                "value": "organization-1-collection-1"
+              }
+            }
+          },
+          {
+            "url": "https://fhir.bbmri.de/StructureDefinition/SampleDiagnosis",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "Orphanet_730",
+                  "system": "http://www.orpha.net/ORDO/"
+                }
+              ]
+            }
+          }
+        ],
+        "collection": {
+          "bodySite": {
+            "coding": [
+              {
+                "code": "0000178",
+                "display": "blood",
+                "system": "http://purl.obolibrary.org/obo/uberon.owl"
+              }
+            ]
+          }
+        },
+        "identifier": [
+          {
+            "value": "case-5:specimen-1"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/case-5"
+        },
+        "type": {
+          "coding": [
+            {
+              "code": "http://purl.obolibrary.org/obo/OBI_0001051",
+              "display": "DNA extract",
+              "system": "http://purl.obolibrary.org/obo/obib.owl"
+            },
+            {
+              "code": "dna",
+              "display": "DNA",
+              "system": "https://fhir.bbmri.de/CodeSystem/SampleMaterialType"
+            },
+            {
+              "code": "74412",
+              "display": "DNA",
+              "system": "http://purl.org/sig/ont/fma/"
+            }
+          ]
+        },
+        "resourceType": "Specimen"
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "url": "Specimen/case-5-specimen-2"
+      },
+      "resource": {
+        "id": "case-5-specimen-2",
+        "meta": {
+          "profile": [
+            "https://fhir.bbmri.de/StructureDefinition/Specimen"
+          ]
+        },
+        "extension": [
+          {
+            "url": "https://fhir.bbmri.de/StructureDefinition/Custodian",
+            "valueReference": {
+              "identifier": {
+                "system": "https://test-assigning-authority",
+                "value": "organization-1-collection-1"
+              }
+            }
+          },
+          {
+            "url": "https://fhir.bbmri.de/StructureDefinition/SampleDiagnosis",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "Orphanet_730",
+                  "system": "http://www.orpha.net/ORDO/"
+                }
+              ]
+            }
+          }
+        ],
+        "collection": {
+          "bodySite": {
+            "coding": [
+              {
+                "code": "0000178",
+                "display": "blood",
+                "system": "http://purl.obolibrary.org/obo/uberon.owl"
+              }
+            ]
+          }
+        },
+        "identifier": [
+          {
+            "value": "case-5:specimen-2"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/case-5"
+        },
+        "type": {
+          "coding": [
+            {
+              "code": "http://purl.obolibrary.org/obo/CL_0000001",
+              "display": "primary cultured cell",
+              "system": "http://purl.obolibrary.org/obo/cl.owl"
+            },
+            {
+              "code": "derivative-other",
+              "display": "Other Derivative",
+              "system": "https://fhir.bbmri.de/CodeSystem/SampleMaterialType"
+            },
+            {
+              "code": "70574",
+              "display": "Plasma cell",
+              "system": "http://purl.org/sig/ont/fma/"
+            }
+          ]
+        },
+        "resourceType": "Specimen"
+      }
+    }
+  ],
+  "type": "transaction",
+  "resourceType": "Bundle"
+}
