@@ -21,7 +21,7 @@ def request_qparams_diseases_filter_multiple_values(request_meta):
     r_params = RequestParams()
     r_params.meta = request_meta
     r_query = RequestQuery()
-    filters = [{'id': ['ordo:Orphanet_10', 'ordo:Orphanet_100']}]
+    filters = [{'id': ['ordo:Orphanet_10', 'ordo:Orphanet_100', 'ordo:Orphanet_100008']}]
     r_query.filters = filters
     r_query.requested_granularity = Granularity.RECORD
     r_params.query = r_query
@@ -29,6 +29,7 @@ def request_qparams_diseases_filter_multiple_values(request_meta):
             'expected_result': [
                 COLLECTION_1_BIOBANK_1,
                 COLLECTION_2_BIOBANK_1,
+                COLLECTION_3_BIOBANK_1,
                 COLLECTION_2_BIOBANK_3,
                 COLLECTION_5_BIOBANK_4]
             }
