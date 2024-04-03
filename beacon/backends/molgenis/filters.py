@@ -65,6 +65,7 @@ def apply_ontology_filter(_filter: OntologyFilter):
 
         if filter_spec is None:
             unsupported_terms.append(ot)
+            continue
         elif filter_spec['attribute'] != attribute:
             # we accept a list of values regarding the same attribute.
             # It means that two values of different ontologies for the same type are ok (e.g., ordo and icd)
@@ -74,7 +75,7 @@ def apply_ontology_filter(_filter: OntologyFilter):
             else:
                 raise HTTPBadRequest(text='Cannot perform an or request with parameters of different type')
 
-            mapped_value.append(filter_spec['mapper'](ot))
+        mapped_value.append(filter_spec['mapper'](ot))
     if len(mapped_value) == 0:
         return None, unsupported_terms
     else:
@@ -109,6 +110,7 @@ def apply_custom_filter(_filter: CustomFilter):
 
         if filter_spec is None:
             unsupported_terms.append(ct)
+            continue
         elif filter_spec['attribute'] != attribute:
             # we accept a list of values regarding the same attribute.
             # It means that two values of different ontologies for the same type are ok (e.g., ordo and icd)
@@ -118,7 +120,7 @@ def apply_custom_filter(_filter: CustomFilter):
             else:
                 raise HTTPBadRequest(text='Cannot perform an or request with parameters of different type')
 
-            mapped_value.append(filter_spec['mapper'](ct))
+        mapped_value.append(filter_spec['mapper'](ct))
     if len(mapped_value) == 0:
         return None, unsupported_terms
     else:
