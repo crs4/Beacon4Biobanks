@@ -6,7 +6,7 @@ def _is_ordo_code(disease_code):
 def _convert_ordo_code(disease_code):
     return f'ordo:Orphanet_{disease_code.split(":")[1]}'
 
-def _map_eprd_v_1_0(record):
+def _map_eprd_v_2_0_0(record):
     """
     Maps a Collection result coming from the directory to the output dataset model
     """
@@ -31,7 +31,7 @@ def _map_eprd_v_1_0(record):
     }
 
 
-def _map_eprd_v_0_3(record):
+def _map_eprd_v1_0_0(record):
     """
     Maps a Collection result coming from the directory to the output dataset model
     """
@@ -41,23 +41,17 @@ def _map_eprd_v_0_3(record):
         'description': record['description'] if 'description' in record else '',
         'type': 'BiobankDataset',
         'homepage': get_collection_uri(record['id']),
-        'publisher': {
-            'id': record['biobank']['id'],
-            'name': record['biobank']['name'],
-            'location': {
-                'id': record['biobank']['country']['id'],
-                'country': record['biobank']['country']['name']
-            }
-        },
-        'createDateTime': record['timestamp'] if 'timestamp' in record else '',
-        'updateDateTime': record['timestamp'] if 'timestamp' in record else '',
+        'location': {
+            'id': record['biobank']['country']['id'],
+            'country': record['biobank']['country']['name']
+        }
     }
 
 
 def map_resource(schema_name):
     def mapper(record):
-        if schema_name == "ejprd-resources-v0.3":
-            return _map_eprd_v_0_3(record)
+        if schema_name == "ejprd-resources-v1.0.0":
+            return _map_eprd_v1_0_0(record)
         else:
-            return _map_eprd_v_1_0(record)
+            return _map_eprd_v_2_0_0(record)
     return mapper

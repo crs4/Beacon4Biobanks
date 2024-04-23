@@ -14,46 +14,25 @@ FILTER_SPEC = {
             "operator": "in",
             "mapper": lambda v: v.replace("Orphanet_", "ORPHA:"),
         },
-        "rdf:type": {
-            "type": "alphanumeric",
+        "ejprd:Biobank": {
+            "type": "ontology",
             "attribute": "",
-            "label": "The type of resource (ejprd:Biobank)",
+            "label": "The type ejprd:Biobank",
             "operator": "",
-            "mapper": lambda v: v,
+            "mapper": lambda v: "",
         },
-        "country": {
+        "dct:spatial": {
             "type": "alphanumeric",
             "label": "Country using ISO 2 digit format",
             "attribute": "country",
             "operator": "in",
             "mapper": lambda v: v
         },
-        "name": {
+        "country": {
             "type": "alphanumeric",
-            "attribute": "name",
-            "label": "Name of the resource",
-            "operator": "like",
-            "mapper": lambda v: v
-        },
-        "description": {
-            "type": "alphanumeric",
-            "attribute": "description",
-            "label": "Description of the resource",
-            "operator": "like",
-            "mapper": lambda v: v
-        },
-        "organization": {
-            "type": "alphanumeric",
-            "attribute": "biobank.name",
-            "label": "Name of the organization that owns the resource",
-            "operator": "=q=",
-            "mapper": lambda v: v
-        },
-        "id": {
-            "type": "alphanumeric",
-            "attribute": "id",
-            "label": "ID the resource",
-            "operator": "=q=",
+            "label": "Country using ISO 2 digit format",
+            "attribute": "country",
+            "operator": "in",
             "mapper": lambda v: v
         }
     },
