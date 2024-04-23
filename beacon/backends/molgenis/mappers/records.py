@@ -42,8 +42,7 @@ def _map_eprd_v1_0_0(record):
         'type': 'BiobankDataset',
         'homepage': get_collection_uri(record['id']),
         'location': {
-            'id': record['biobank']['country']['id'],
-            'country': record['biobank']['country']['name']
+            'country': record['biobank']['country']['id']
         }
     }
 
