@@ -38,3 +38,5 @@ molgenis:
   user: ""
   password: ""
   base_resource_url: ""
+  base_resource_check_url: ""
+  alternative_base_resource_url: ""

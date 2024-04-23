@@ -72,6 +72,8 @@ class MolgenisParams:
     user: Optional[str]
     password: Optional[str]
     base_resource_url: str
+    base_resource_check_url: Optional[str]
+    alternative_base_resource_url: Optional[str]
 
 
 @dataclass
