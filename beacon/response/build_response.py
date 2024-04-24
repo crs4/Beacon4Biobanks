@@ -159,6 +159,21 @@ def build_beacon_count_response(data, num_total_results, qparams: RequestParams,
         'meta': build_meta(qparams, entity_schema, Granularity.COUNT),
         'responseSummary': build_response_summary(num_total_results > 0, num_total_results),
         # TODO: 'extendedInfo': build_extended_info(),
+        'response': {
+            'resultSets': [{
+                "id": "",
+                "type": entity_schema['entityType'] if entity_schema is not None else None,
+                "exists": num_total_results > 0,
+                "resultCount": num_total_results,
+                "info": {
+                    "resultCountDescription": {
+                        "minRange": num_total_results,
+                        "maxRange": num_total_results
+                    }
+                }
+            }
+            ]
+        },
         'beaconHandovers': conf.service.handovers if conf.service.handovers is not None else []
     }
     return beacon_response
