@@ -5,16 +5,16 @@ from .exceptions import SchemaNotSupported, DefaultSchemaNotSpecified
 
 _SCHEMAS = {
     "resource": {
-        "ejprd-resources-v0.3": {
+        "ejprd-resources-v1.0.0": {
             "entityType": "resources",
-            "schema": "ejprd-resources-v0.3",
+            "schema": "ejprd-resources-v1.0.0",
             "name": "EJPRD schema for resources (QB API version)",
             "url": "https://raw.githubusercontent.com/ejp-rd-vp/query_builder_api/master/versions/v3/schema/resource.json",
             "version": "v0.3"
         },
-        "ejprd-resources-v1.0.0": {
+        "ejprd-resources-v2.0.0": {
             "entityType": "resources",
-            "schema": "ejprd-resources-v1.0.0",
+            "schema": "ejprd-resources-v2.0.0",
             "name": "EJPRD schema for resources",
             "url": "https://raw.githubusercontent.com/ejp-rd-vp/vp-api-specs/main/schemas/biobank-registry-schema.json",
             "version": "v1.0.0"
