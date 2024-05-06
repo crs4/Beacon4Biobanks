@@ -155,9 +155,6 @@ def build_beacon_count_response(data, num_total_results, qparams: RequestParams,
     """
     Transform data into the Beacon response format.
     """
-    print('********')
-    print(entity_schema)
-    print('********')
     beacon_response = {
         'meta': build_meta(qparams, entity_schema, Granularity.COUNT),
         'responseSummary': build_response_summary(num_total_results > 0, num_total_results),
