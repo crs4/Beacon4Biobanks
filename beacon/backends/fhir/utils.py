@@ -148,7 +148,7 @@ def generate_id():
 
 
 def get_filtering_terms_results(scope=None):
-    return [ft for ft in get_filters() if scope is None or scope in ft['scope']]
+    return [ft for ft in get_filters() if scope is None or scope in ft['scopes']]
 
 
 def encode(string):

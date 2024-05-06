@@ -31,17 +31,17 @@ _FILTERS = [{
     'id': 'icd10',
     'type': 'ontology',
     'label': 'Disease using an icd10 code (e.g., icd10:G18.0)',
-    'scope': ['biosamples', 'individuals']
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'ordo',
     'type': 'ontology',
     'label': 'Disease using an orphanet code (e.g., ordo:Orphanet_589)',
-    'scope': ['biosamples', 'individuals']
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'obo:NCIT_C28421',
     'type': 'alphanumeric',
     'label': 'Sex',
-    'scope': ['biosamples', 'individuals'],
+    'scopes': ['biosamples', 'individuals'],
     'allowed_values': [
         'obo:NCIT_C16576',  # Female
         'obo:NCIT_C20197',  # Male
@@ -52,12 +52,12 @@ _FILTERS = [{
     'id': 'obo:NCIT_C156420',
     'type': 'alphanumeric',
     'label': 'Age at diagnosis',
-    'scope': ['biosample', 'individual']
+    'scopes': ['biosample', 'individual']
 }, {
     'id': 'obo:NCIT_C83164',
     'type': 'alphanumeric',
     'label': 'Year of birth',
-    'scope': ['biosamples', 'individuals']
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'obo:NCIT_C70713',
     'type': 'alphanumeric',
@@ -82,139 +82,174 @@ _FILTERS = [{
         'OBI_0001051',  # (DNA extract)
         'OBI_0000880',  # (RNA extract)
         'OBI_0001479',  # (specimen from organism)
-    ]
+    ],
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'whole-blood',
     'label': 'Whole blood',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
+
 }, {
     'id': 'bone-marrow',
     'label': 'Bone marrow',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'buffy-coat',
     'label': 'Buffy-Coat',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'dried-whole-blood',
     'label': 'Dried whole blood',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'peripheral-blood-cells-vital',
     'label': 'Peripheral blood mononuclear cells (PBMCs, viable)',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'blood-plasma',
     'label': 'Plasma',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'plasma-edta',
     'label': 'Plasma, EDTA',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'plasma-citrat',
     'label': 'Plasma, Citrat',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'plasma-heparin',
     'label': 'Plasma, Heparin',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'plasma-cell-free',
     'label': 'Plasma, cell free',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'plasma-other',
     'label': 'Plasma, other',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'blood-serum',
     'label': 'Serum',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'ascites',
     'label': 'Ascites',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'csf-liquor',
     'label': 'CSF/Liquor',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'saliva',
     'label': 'Saliva',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'stool-faeces',
     'label': 'Stool/Faeces',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'urine',
     'label': 'Urine',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'swab',
     'label': 'Swab',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'liquid-other',
     'label': 'Other liquid biosample/storage',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'tissue-ffpe',
     'label': 'Tissue FFPE',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'tumor-tissue-ffpe',
     'label': 'Tumor tissue (FFPE)',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'normal-tissue-ffpe',
     'label': 'Normal tissue (FFPE)',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'other-tissue-ffpe',
     'label': 'Other tissue (FFPE)',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'tissue-frozen',
     'label': 'Tissue frozen',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'tumor-tissue-frozen',
     'label': 'Tumor tissue (frozen)',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'normal-tissue-frozen',
     'label': 'Normal tissue (frozen)',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'other-tissue-frozen',
     'label': 'Other tissue (frozen)',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'tissue-other',
     'label': 'Other tissue storage',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'dna',
     'label': 'DNA',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'cf-dna',
     'label': 'cfDNA',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'g-dna',
     'label': 'gDNA',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'rna',
     'label': 'RNA',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }, {
     'id': 'derivative-other',
     'label': 'Other derivative',
-    'type': 'custom'
+    'type': 'custom',
+    'scopes': ['biosamples', 'individuals']
 }]
 
 _FILTERS_TO_CQL = {
