@@ -8,6 +8,10 @@ server {
     ssl_certificate     /beacon/nginx/certs/beacon.cert;
     ssl_certificate_key /beacon/nginx/certs/beacon.key;
 
+    add_header X-Frame-Options "DENY";
+    add_header X-Content-Type-Options nosniff;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
     location / {
         # Adding the wide-open CORS settings
         if (${DOLLAR}request_method = 'OPTIONS') {
