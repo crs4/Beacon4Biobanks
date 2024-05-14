@@ -1,6 +1,7 @@
 import logging
 
 from beacon import conf
+from beacon.backends.fhir.mappings import _UNSUPPORTED_FILTERS
 from beacon.request import RequestParams
 from beacon.request.model import Granularity
 
@@ -171,7 +172,11 @@ def build_beacon_count_response(data, num_total_results, qparams: RequestParams,
                         "maxRange": num_total_results
                     },
                     "countType": "Overall number of{0}Biosamples hosted into one or more Biobanks in BBMRI Directory".format(
-                        " Individuals related to " if entity_schema['entityType'] == 'individual' else " ")
+                        " Individuals related to " if entity_schema['entityType'] == 'individual' else " "),
+
+                    'warnings': {
+                        'unsupported filters': _UNSUPPORTED_FILTERS
+                    }
                 }
             }
             ]
