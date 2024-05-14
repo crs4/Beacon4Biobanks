@@ -252,6 +252,12 @@ _FILTERS = [{
     'scopes': ['biosamples', 'individuals']
 }]
 
+_UNSUPPORTED_FILTERS = [
+    'sio:SIO_010056',
+    'edam:data_2295',
+    'ncit:C124353'
+]
+
 _FILTERS_TO_CQL = {
     'icd10': {
         'cql_parameter_class': 'diagnosis',
