@@ -1,7 +1,6 @@
 import logging
 
 from beacon import conf
-from beacon.backends.fhir.mappings import _UNSUPPORTED_FILTERS
 from beacon.request import RequestParams
 from beacon.request.model import Granularity
 
@@ -152,10 +151,12 @@ def build_beacon_resultset_response_by_dataset(data, list_of_dataset_dicts, num_
 # Count Response
 ########################################
 
-def build_beacon_count_response(data, num_total_results, qparams: RequestParams, func_response_type, entity_schema):
+def build_beacon_count_response(data, num_total_results, qparams: RequestParams, func_response_type, entity_schema,
+                                unsupported_filters=None):
     """
     Transform data into the Beacon response format.
     """
+    print('building response...')
     beacon_response = {
         'meta': build_meta(qparams, entity_schema, Granularity.COUNT),
         'responseSummary': build_response_summary(num_total_results > 0, num_total_results),
@@ -171,11 +172,10 @@ def build_beacon_count_response(data, num_total_results, qparams: RequestParams,
                         "minRange": num_total_results,
                         "maxRange": num_total_results
                     },
-                    "countType": "Overall number of{0}Biosamples hosted into one or more Biobanks in BBMRI Directory".format(
-                        " Individuals related to " if entity_schema['entityType'] == 'individual' else " "),
+                    "countType": _get_count_type(entity_schema['entityType']),
 
                     'warnings': {
-                        'unsupported filters': _UNSUPPORTED_FILTERS
+                        'unsupported filters': unsupported_filters
                     }
                 }
             }
@@ -183,6 +183,8 @@ def build_beacon_count_response(data, num_total_results, qparams: RequestParams,
         },
         'beaconHandovers': conf.service.handovers if conf.service.handovers is not None else []
     }
+    if unsupported_filters is None or len(unsupported_filters) == 0:
+        del beacon_response['response']['resultSets'][0]['info']['warnings']
     return beacon_response
 
 
@@ -332,3 +334,10 @@ def build_error(non_accessible_datasets):
             'errorMessage': message
         }
     }
+
+
+def _get_count_type(entity_type):
+    if entity_type != 'resources':
+        return "Overall number of{0}Biosamples hosted into one or more Biobanks in BBMRI Directory".format(
+            " Individuals related to " if entity_type == 'individual' else " ")
+    return "Overall number of resources hosted in BBMRI Directory"

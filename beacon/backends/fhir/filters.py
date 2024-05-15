@@ -2,9 +2,9 @@ import logging
 import re
 from typing import List, Union
 
-from beacon.backends.fhir.cql.codesystems import FHIR_CODE_SYSTEMS
 from beacon.backends.fhir.cql.parameters import get_cql_parameter_factory
 from beacon.backends.fhir.mappings import get_cql_condition_arguments_from_beacon_filter
+from beacon.backends.fhir.mappings import get_unsupported_filters
 from beacon.request.model import AlphanumericFilter, CustomFilter, OntologyFilter
 
 LOG = logging.getLogger(__name__)
@@ -21,7 +21,11 @@ def _match_ids_to_ontologies(id_: Union[str, list]):
 
 def apply_filters(filters: List[dict], scope='biosamples'):
     query_conditions = {}
+    unsupported_filters = []
     for f in filters:
+        if f['id'] in get_unsupported_filters():  # skip filter
+            unsupported_filters.append(f['id'])
+            continue
         if "value" in f:
             f = AlphanumericFilter(**f)
             LOG.debug("Alphanumeric filter: %s %s %s", f.id, f.operator, f.value)
@@ -34,7 +38,7 @@ def apply_filters(filters: List[dict], scope='biosamples'):
             f = CustomFilter(**f)
             LOG.debug("Custom filter: %s", f.id)
             apply_custom_filter(query_conditions, f, scope)
-    return query_conditions.values()
+    return query_conditions.values(), unsupported_filters
 
 
 def apply_ontology_filter(parameters: dict, filter_: OntologyFilter, scope='biosamples'):

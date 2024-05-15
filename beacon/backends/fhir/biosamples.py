@@ -16,18 +16,20 @@ def get_biosamples(entry_id: str, qparams, granularity=Granularity.COUNT):
     """
     Queries for biosamples in FHIR store
     """
-    query_arguments = apply_filters(qparams.query.filters, 'biosamples')
+    filters = apply_filters(qparams.query.filters, 'biosamples')
+    query_arguments = filters[0]
+    unsupported_filters = filters[1]
     cql_query = create_cql(query_arguments, 'biosamples', entry_id)
     count, resources = get_biosample_results(cql_query, granularity)
     if granularity == Granularity.COUNT or count == 0:
-        return get_schema_from_query_params("biosample", qparams), count, []
+        return get_schema_from_query_params("biosample", qparams), count, [], unsupported_filters
     else:
         biosamples = list(map(map_biosamples, resources))
-        return get_schema_from_query_params("biosample", qparams), count, biosamples
+        return get_schema_from_query_params("biosample", qparams), count, biosamples, unsupported_filters
 
 
 def get_biosample_with_id(entry_id: str, qparams, granularity=Granularity.COUNT):
-    query_arguments = apply_filters(qparams.query.filters, 'biosamples')
+    query_arguments = apply_filters(qparams.query.filters, 'biosamples')[0]
     cql_query = create_cql(query_arguments, 'biosamples')
     cql_query['id'] = entry_id
     resources = get_biosample_results(cql_query, qparams.query.requested_granularity)

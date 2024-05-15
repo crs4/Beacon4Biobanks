@@ -58,12 +58,12 @@ FILTER_SPEC = {
         "namespacePrefix": "dct",
         "iriPrefix": "http://purl.org/dc/terms/"
     }, {
-       "id": "rdf",
-       "name": "Resource Description Framework",
-       "url": "https://www.w3.org/TR/rdf11-concepts/",
-       "version": "2020-01-20",
-       "namespacePrefix": "rdf",
-       "iriPrefix": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        "id": "rdf",
+        "name": "Resource Description Framework",
+        "url": "https://www.w3.org/TR/rdf11-concepts/",
+        "version": "2020-01-20",
+        "namespacePrefix": "rdf",
+        "iriPrefix": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     }, {
         "id": "ejp-rd",
         "name": "EJP-RD Vocabulary",
@@ -89,8 +89,12 @@ FILTER_SPEC = {
 }
 
 
-def get_filter_spec(filter_id):
-    try:
-        return FILTER_SPEC['terms'][filter_id]
-    except KeyError:
-        return None
+def get_filter_spec(ot):
+    if ot == 'ejprd:Biobank':
+        return ot
+    else:
+        curie_prefix, curie_value = ot.split(':')
+        try:
+            return FILTER_SPEC['terms'][curie_prefix]
+        except KeyError:
+            return None
