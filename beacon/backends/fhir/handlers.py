@@ -26,8 +26,8 @@ def filtering_terms_handler(fn, request=None):
         filtering_terms_data = {
             'resources': FILTER_SPEC['resources'],
             'filteringTerms': (
-            [r for r in records] if records else []
-        )
+                [r for r in records] if records else []
+            )
 
         }
         response = build_filtering_terms_response(filtering_terms_data, count, qparams, lambda x, y: x, entity_schema)
@@ -74,14 +74,16 @@ def generic_handler(fn, request=None):
             granularity = Granularity.COUNT
 
         entry_id = request.headers.get('X-Resource-ID', None)
-        entity_schema, count, records = fn(entry_id, qparams, granularity)
+        entity_schema, count, records, unsupported_filters = fn(entry_id, qparams, granularity)
         LOG.debug(entity_schema)
         if granularity == Granularity.BOOLEAN:
             response = build_beacon_boolean_response(records, count, qparams, lambda x, y: x, entity_schema)
         elif granularity == Granularity.COUNT:
-            response = build_beacon_count_response(records, count, qparams, lambda x, y: x, entity_schema)
+            response = build_beacon_count_response(records, count, qparams, lambda x, y: x, entity_schema,
+                                                   unsupported_filters)
         else:
-            response = build_beacon_count_response(records, count, qparams, lambda x, y: x, entity_schema)
+            response = build_beacon_count_response(records, count, qparams, lambda x, y: x, entity_schema,
+                                                   unsupported_filters)
         return web.json_response(response)
 
     return wrapper

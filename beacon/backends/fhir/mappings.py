@@ -337,6 +337,10 @@ def get_filters():
     return _FILTERS
 
 
+def get_unsupported_filters():
+    return _UNSUPPORTED_FILTERS
+
+
 def get_cql_condition_arguments_from_beacon_filter(beacon_filter):
     try:
         return _FILTERS_TO_CQL[beacon_filter]

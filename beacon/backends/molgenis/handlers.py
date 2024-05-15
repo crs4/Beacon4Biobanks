@@ -74,9 +74,11 @@ def generic_handler(fn, request=None):
 
         entity_schema, count, records, unsupported_filters = fn(entry_id, qparams, granularity)
         if granularity == Granularity.BOOLEAN:
-            response = build_beacon_boolean_response(records, count, qparams, lambda x, y: x, entity_schema)
+            response = build_beacon_boolean_response(records, count, qparams, lambda x, y: x, entity_schema,
+                                                     unsupported_filters)
         elif granularity == Granularity.COUNT:
-            response = build_beacon_count_response(records, count, qparams, lambda x, y: x, entity_schema)
+            response = build_beacon_count_response(records, count, qparams, lambda x, y: x, entity_schema,
+                                                   unsupported_filters)
         else:
             response = build_beacon_resultset_response(records, count, qparams, lambda x, y: x, entity_schema,
                                                        unsupported_filters)
