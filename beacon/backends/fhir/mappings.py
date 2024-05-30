@@ -3,10 +3,10 @@ Filtering terms to support for biosamples:
 
 Diagnosis: (Ontology) Orphanet or ICD and it queries "Sample content diagnosis" field of the Specimen resource
 Sex: Decide whether to use ontology or alphanumeric as for the individuals
-    - (Ontology) using (OBO:NCIT_C16576, OBO:NCIT_C20197, OBO:NCIT_C124294, OBO:NCIT_C17998)
-    - Alphanumeric: in this case the id would be obo:NCIT_C28421
-Specimen type: (Alphanumeric) id = obo:NCIT_C70713 and values taken from MIABIS
-Age at diagnosis: (Alphanumeric) id = obo:NCIT_C156420, operator and value
+    - (Ontology) using (ncit:C16576, ncit:C20197, ncit:C124294, ncit:C17998)
+    - Alphanumeric: in this case the id would be ncit:C28421
+Specimen type: (Alphanumeric) id = ncit:C70713 and values taken from MIABIS
+Age at diagnosis: (Alphanumeric) id = ncit:C156420, operator and value
 """
 
 import logging
@@ -38,28 +38,28 @@ _FILTERS = [{
     'label': 'Disease using an orphanet code (e.g., ordo:Orphanet_589)',
     'scopes': ['biosamples', 'individuals']
 }, {
-    'id': 'obo:NCIT_C28421',
+    'id': 'ncit:C28421',
     'type': 'alphanumeric',
     'label': 'Sex',
     'scopes': ['biosamples', 'individuals'],
     'allowed_values': [
-        'obo:NCIT_C16576',  # Female
-        'obo:NCIT_C20197',  # Male
-        'obo:NCIT_C124294',
-        'obo:NCIT_C17998',
+        'ncit:C16576',  # Female
+        'ncit:C20197',  # Male
+        'ncit:C124294',
+        'ncit:C17998',
     ]
 }, {
-    'id': 'obo:NCIT_C156420',
+    'id': 'ncit:C156420',
     'type': 'alphanumeric',
     'label': 'Age at diagnosis',
     'scopes': ['biosample', 'individual']
 }, {
-    'id': 'obo:NCIT_C83164',
+    'id': 'ncit:C83164',
     'type': 'alphanumeric',
     'label': 'Year of birth',
     'scopes': ['biosamples', 'individuals']
 }, {
-    'id': 'obo:NCIT_C70713',
+    'id': 'ncit:C70713',
     'type': 'alphanumeric',
     'label': 'Biospecimen type',
     'allowed_values': [
@@ -269,28 +269,28 @@ _FILTERS_TO_CQL = {
         'type': 'ontology',
         'extension': ''
     },
-    'obo:NCIT_C28421': {
+    'ncit:C28421': {
         'cql_parameter_class': 'sex',
         'type': 'alphanumeric',
         'extension': '',
         'values_mapper': lambda v: {
-            'obo:NCIT_C16576': 'female',  # female
-            'obo:NCIT_C20197': 'male',  # male
-            'obo:NCIT_C124294': 'other',  # undetermined
-            'obo:NCIT_C17998': 'unknown',  # other
+            'ncit:C16576': 'female',  # female
+            'ncit:C20197': 'male',  # male
+            'ncit:C124294': 'other',  # undetermined
+            'ncit:C17998': 'unknown',  # other
         }[v]
     },
-    'obo:NCIT_C156420': {
+    'ncit:C156420': {
         'cql_parameter_class': 'age_at_diagnosis',
         'type': 'alphanumeric',
         'values_mapper': lambda v: v
     },
-    'obo:NCIT_C83164': {
+    'ncit:C83164': {
         'cql_parameter_class': 'year_of_birth',
         'type': 'alphanumeric',
         'values_mapper': lambda v: v
     },
-    'obo:NCIT_C70713': {
+    'ncit:C70713': {
         'cql_parameter_class': 'sample_type',
         'type': 'alphanumeric',
         'fhir_codesystem': 'SampleMaterialType',
