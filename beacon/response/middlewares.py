@@ -25,7 +25,7 @@ def handle_error(request, exc):
 async def build_error_response(ex):
     return json_response({
         'errorCode': ex.status_code,
-        'errorMessage': ex.reason
+        'errorMessage': ex.text
     })
 
 
@@ -35,6 +35,7 @@ async def error_middleware(request, handler):
         return await handler(request)
     except web.HTTPException as ex:  # Just the 400's and 500's
         # if the request comes from /api/*, we output the json version
+        print('Error on page %s: %s', request.path, ex)
         LOG.error('Error on page %s: %s', request.path, ex)
         return await build_error_response(ex)
 
@@ -133,7 +134,6 @@ def JWTMiddleware(
                 signing_key = jwks_client.get_signing_key_from_jwt(token)
             except jwt.exceptions.PyJWKClientError:
                 raise web.HTTPUnauthorized(reason="Invalid token")
-
 
             try:
                 decoded = jwt.decode(
