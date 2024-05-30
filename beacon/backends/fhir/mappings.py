@@ -11,8 +11,6 @@ Age at diagnosis: (Alphanumeric) id = ncit:C156420, operator and value
 
 import logging
 
-from aiohttp.web_exceptions import HTTPBadRequest
-
 _PREFIXES_TO_EXTENDED = {
     'FastingStatus': 'http://terminology.hl7.org/CodeSystem/v2-0916',
     'SampleMaterialType': 'https://fhir.bbmri.de/CodeSystem/SampleMaterialType',
@@ -341,11 +339,13 @@ def get_unsupported_filters():
     return _UNSUPPORTED_FILTERS
 
 
-def get_cql_condition_arguments_from_beacon_filter(beacon_filter):
+def get_cql_condition_arguments_from_beacon_filter(beacon_filter, unsupported_filters):
     try:
         return _FILTERS_TO_CQL[beacon_filter]
     except KeyError:
-        raise HTTPBadRequest(text="Filter not supported")
+        if beacon_filter not in unsupported_filters:
+            unsupported_filters.append(beacon_filter)
+        raise KeyError
 
 
 def get_beacon_code_from_fhir_extension(extension):
