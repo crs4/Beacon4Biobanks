@@ -67,6 +67,7 @@ def generic_handler(fn, request=None):
     async def wrapper(request: Request):
         # Get params
         json_body = await request.json() if request.method == "POST" and request.can_read_body else {}
+        LOG.debug("Body request is: %s" % json_body)
         qparams = RequestParams(**json_body).from_request(request)
 
         granularity = _extract_granularity_from_query(qparams)
