@@ -1,3 +1,5 @@
+from beacon import conf
+
 FILTER_SPEC = {
     "terms": {
         "ordo": {
@@ -7,13 +9,6 @@ FILTER_SPEC = {
             "operator": "in",
             "mapper": lambda v: v.replace("ordo:Orphanet_", "ORPHA:"),
         },
-        "Orphanet_": {  # legacy filter for Orphanet code for to support old vp api spec
-            "type": "custom",
-            "attribute": "diagnosis_available",
-            "label": "Disease using an orphanet code (e.g., Orphanet_589)",
-            "operator": "in",
-            "mapper": lambda v: v.replace("Orphanet_", "ORPHA:"),
-        },
         "ejprd:Biobank": {
             "type": "ontology",
             "attribute": "",
@@ -22,13 +17,6 @@ FILTER_SPEC = {
             "mapper": lambda v: "",
         },
         "dct:spatial": {
-            "type": "alphanumeric",
-            "label": "Country using ISO 2 digit format",
-            "attribute": "country",
-            "operator": "in",
-            "mapper": lambda v: v
-        },
-        "country": {
             "type": "alphanumeric",
             "label": "Country using ISO 2 digit format",
             "attribute": "country",
@@ -87,6 +75,24 @@ FILTER_SPEC = {
         "iriPrefix": "http://purl.obolibrary.org/obo/NCIT_"
     }]
 }
+
+if conf.service.legacy_filters_enabled:
+    FILTER_SPEC["terms"].update({
+        "Orphanet_": {  # legacy filter for Orphanet code for to support old vp api spec
+            "type": "custom",
+            "attribute": "diagnosis_available",
+            "label": "Disease using an orphanet code (e.g., Orphanet_589)",
+            "operator": "in",
+            "mapper": lambda v: v.replace("Orphanet_", "ORPHA:"),
+        },
+        "country": {
+            "type": "alphanumeric",
+            "label": "Country using ISO 2 digit format",
+            "attribute": "country",
+            "operator": "in",
+            "mapper": lambda v: v
+        }
+    })
 
 
 def get_filter_spec(ot):
