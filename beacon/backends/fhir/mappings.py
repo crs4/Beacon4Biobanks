@@ -177,27 +177,27 @@ if conf.service.legacy_filters_enabled:
             'fhir_codesystem': 'ordo',
             'extension': ''
         },
-        'NCIT_C28421': {
-            'cql_parameter_class': 'sex',
-            'type': 'alphanumeric',
-            'extension': '',
-            'values_mapper': lambda v: {
-                'NCIT_C16576': 'female',  # female
-                'NCIT_C20197': 'male',  # male
-                'NCIT_C124294': 'other',  # undetermined
-                'NCIT_C17998': 'unknown',  # other
-            }[v]
-        },
-        'NCIT_C156420': {
-            'cql_parameter_class': 'age_at_diagnosis',
-            'type': 'alphanumeric',
-            'values_mapper': lambda v: v
-        },
-        'NCIT_C83164': {
-            'cql_parameter_class': 'year_of_birth',
-            'type': 'alphanumeric',
-            'values_mapper': lambda v: v
-        },
+        # 'NCIT_C28421': {
+        #     'cql_parameter_class': 'sex',
+        #     'type': 'alphanumeric',
+        #     'extension': '',
+        #     'values_mapper': lambda v: {
+        #         'NCIT_C16576': 'female',  # female
+        #         'NCIT_C20197': 'male',  # male
+        #         'NCIT_C124294': 'other',  # undetermined
+        #         'NCIT_C17998': 'unknown',  # other
+        #     }[v]
+        # },
+        # 'NCIT_C156420': {
+        #     'cql_parameter_class': 'age_at_diagnosis',
+        #     'type': 'alphanumeric',
+        #     'values_mapper': lambda v: v
+        # },
+        # 'NCIT_C83164': {
+        #     'cql_parameter_class': 'year_of_birth',
+        #     'type': 'alphanumeric',
+        #     'values_mapper': lambda v: v
+        # },
     })
 
 
