@@ -9,6 +9,7 @@ service:
   entry_types:
     - type: resource
       default_schema: "ejprd-resources-v1.0.0"
+  legacy_filters_enabled: false
 ga4gh:
   service_type_group: org.ga4gh
   service_type_artifact: beacon

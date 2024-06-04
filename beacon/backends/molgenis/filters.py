@@ -14,7 +14,7 @@ CURIE_REGEX = r'^([a-zA-Z0-9]*):\/?[a-zA-Z0-9.-_]*$'  # N.B. The dot (.) is allo
 
 
 def _match_ids_to_ontologies(id_: Union[str, list]):
-    if type(id_) == str:
+    if id_ is str:
         return re.match(CURIE_REGEX, id_)
     else:
         return all(re.match(CURIE_REGEX, i) for i in id_)
@@ -87,7 +87,7 @@ def apply_alphanumeric_filter(_filter: AlphanumericFilter):
     if filter_spec is None:
         return None
 
-    if type(_filter.value) == str:
+    if _filter.value is str:
         filter_value = [_filter.value]
     else:
         filter_value = _filter.value
@@ -96,7 +96,7 @@ def apply_alphanumeric_filter(_filter: AlphanumericFilter):
 
 
 def apply_custom_filter(_filter: CustomFilter):
-    custom_terms = [_filter.id] if type(_filter.id) == str else _filter.id
+    custom_terms = [_filter.id] if _filter.id is str else _filter.id
     unsupported_terms = []
     mapped_value = []
     attribute = None

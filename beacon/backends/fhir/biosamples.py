@@ -1,6 +1,8 @@
 import logging
 from typing import Optional
 
+from aiohttp.web_exceptions import HTTPBadRequest
+
 from beacon.backends.fhir.cql.builder import create_cql
 from beacon.backends.fhir.filters import apply_filters
 from beacon.backends.fhir.mappers.records import map_biosamples
@@ -18,6 +20,9 @@ def get_biosamples(entry_id: str, qparams, granularity=Granularity.COUNT):
     """
     filters = apply_filters(qparams.query.filters, 'biosamples')
     query_arguments = filters[0]
+    if len(query_arguments) == 0:
+        raise HTTPBadRequest(
+            text="No valid query params provided. At least one supported and valid parameter should be provided")
     unsupported_filters = filters[1]
     cql_query = create_cql(query_arguments, 'biosamples', entry_id)
     count, resources = get_biosample_results(cql_query, granularity)

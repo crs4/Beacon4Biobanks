@@ -13,6 +13,7 @@ service:
     - type: individual
       default_schema: "beacon-individual-v2.0.0"
   handovers: [ ]
+  legacy_filters_enabled: false
 ga4gh:
   service_type_group: 'org.ga4gh'
   service_type_artifact: 'beacon'
