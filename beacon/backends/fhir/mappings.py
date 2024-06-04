@@ -11,6 +11,8 @@ Age at diagnosis: (Alphanumeric) id = ncit:C156420, operator and value
 
 import logging
 
+from beacon import conf
+
 _PREFIXES_TO_EXTENDED = {
     'FastingStatus': 'http://terminology.hl7.org/CodeSystem/v2-0916',
     'SampleMaterialType': 'https://fhir.bbmri.de/CodeSystem/SampleMaterialType',
@@ -157,6 +159,46 @@ _FHIR_EXTENSIONS_TO_BEACON = {
     'https://fhir.bbmri.de/StructureDefinition/SampleDiagnosis': 'histologicalDiagnosis',
     # 'https://fhir.bbmri.de/StructureDefinition/Custodian': 'custodian'
 }
+
+if conf.service.legacy_filters_enabled:
+    _FILTERS.extend([{
+        "Orphanet_": {  # legacy filter for Orphanet code for to support old vp api spec
+            "type": "custom",
+            "attribute": "diagnosis_available",
+            "label": "Disease using an orphanet code (e.g., Orphanet_589)",
+            "scopes": ["biosamples", "individuals"]
+        }}
+    ])
+
+    _FILTERS_TO_CQL.update({
+        'Orphanet_': {
+            'cql_parameter_class': 'diagnosis',
+            'type': 'custom',
+            'fhir_codesystem': 'ordo',
+            'extension': ''
+        },
+        'NCIT_C28421': {
+            'cql_parameter_class': 'sex',
+            'type': 'alphanumeric',
+            'extension': '',
+            'values_mapper': lambda v: {
+                'NCIT_C16576': 'female',  # female
+                'NCIT_C20197': 'male',  # male
+                'NCIT_C124294': 'other',  # undetermined
+                'NCIT_C17998': 'unknown',  # other
+            }[v]
+        },
+        'NCIT_C156420': {
+            'cql_parameter_class': 'age_at_diagnosis',
+            'type': 'alphanumeric',
+            'values_mapper': lambda v: v
+        },
+        'NCIT_C83164': {
+            'cql_parameter_class': 'year_of_birth',
+            'type': 'alphanumeric',
+            'values_mapper': lambda v: v
+        },
+    })
 
 
 def get_codesystem_prefix(extended):

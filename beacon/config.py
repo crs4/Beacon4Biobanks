@@ -7,6 +7,7 @@ class EntryType:
     type: str
     default_schema: str
 
+
 @dataclass
 class ServiceParams:
     backend: str
@@ -19,6 +20,7 @@ class ServiceParams:
     handovers: Optional[List]
     default_number_of_items_per_request: Optional[int] = 100
     auth_key: Optional[str] = None
+    legacy_filters_enabled: Optional[bool] = False
 
 
 @dataclass
@@ -82,12 +84,14 @@ class FHIRStoreParams:
     user: Optional[str]
     password: Optional[str]
 
+
 @dataclass
 class IdpParams:
     user_info_url: str
     jwk_set_url: str
     issuer: str
     audience: Optional[str]
+
 
 @dataclass
 class BeaconConfig:
@@ -100,5 +104,4 @@ class BeaconConfig:
     molgenis: Optional[MolgenisParams]
     fhir: Optional[FHIRStoreParams]
     idp: Optional[IdpParams]
-    legacy_filters_enabled: Optional[bool] = False
 

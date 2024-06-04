@@ -94,18 +94,24 @@ def apply_alphanumeric_filter(parameters: dict, filter_: AlphanumericFilter, uns
 
 def apply_custom_filter(parameters: dict, filter_: CustomFilter, unsupported_filters: List, scope='biosamples'):
     if type(filter_.id) in (str, int):
-        values = [filter_.id]
+        custom_terms = [filter_.id]
     else:
-        values = filter_.id
-    for value in values:
+        custom_terms = filter_.id
+
+    for ct in custom_terms:
+        if ct.startswith('Orphanet_'):
+            filter_spec = 'Orphanet_'
+        else:
+            filter_spec = ct
+
         try:
-            parameter_args = get_cql_condition_arguments_from_beacon_filter(value, unsupported_filters)
+            parameter_args = get_cql_condition_arguments_from_beacon_filter(filter_spec, unsupported_filters)
             parameter_type = parameter_args['cql_parameter_class']
 
             parameter = _get_or_create_parameter(parameters, parameter_type, scope)
-            parameter.add_condition_parameters(code=parameter_args['id'], code_system=parameter_args['fhir_codesystem'])
+            parameter.add_condition_parameters(code=ct, code_system=parameter_args.get('fhir_codesystem'))
         except KeyError:
-            logging.error(f'Filter {value} is not supported')
+            logging.error(f'Filter {ct} is not supported')
 
 
 def _get_or_create_parameter(parameters: dict, parameter_type: str, scope='biosamples'):
