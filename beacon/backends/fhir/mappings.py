@@ -61,192 +61,26 @@ _FILTERS = [{
     'type': 'alphanumeric',
     'label': 'Biospecimen type',
     'allowed_values': [
-        'OBI_0000655',  # (blood specimen)
-        'OBI_0002512',  # (bone marrow)
-        'OBIB_0000036',  # (buffy coat)
-        'CL_2000001',  # (peripheral blood mononuclear cell)
-        'OBI_0100016',  # (blood plasma specime)
-        'OBI_0100017',  # (blood serum)
-        'UBERON_0007795',  # (ascites fluid)
-        'OBI_0002502',  # (cerebrospinal fluid)
-        'OBI_0002507',  # (saliva)
-        'OBI_0002503',  # (feces)
-        'OBI_0000651',  # (urine)
-        'OBI_0002599',  # (swab)
-        'OBI_2000009',  # (bodily fluid specimen)
-        'OBI_1200000',  # (FFPE specimen)
-        'OBI_0000922',  # (frozen specimen)
-        'OBI_0001472',  # (specimen with known storage state)
-        'OBI_0001051',  # (DNA extract)
-        'OBI_0000880',  # (RNA extract)
-        'OBI_0001479',  # (specimen from organism)
+        'obi:0000655',  # (blood specimen)
+        'obi:0002512',  # (bone marrow)
+        'obib:0000036',  # (buffy coat)
+        'cl:2000001',  # (peripheral blood mononuclear cell)
+        'obi:0100016',  # (blood plasma specime)
+        'obi:0100017',  # (blood serum)
+        'uberon:0007795',  # (ascites fluid)
+        'obi:0002502',  # (cerebrospinal fluid)
+        'obi:0002507',  # (saliva)
+        'obi:0002503',  # (feces)
+        'obi:0000651',  # (urine)
+        'obi:0002599',  # (swab)
+        'obi:2000009',  # (bodily fluid specimen)
+        'obi:1200000',  # (FFPE specimen)
+        'obi:0000922',  # (frozen specimen)
+        'obi:0001472',  # (specimen with known storage state)
+        'obi:0001051',  # (DNA extract)
+        'obi:0000880',  # (RNA extract)
+        'obi:0001479',  # (specimen from organism)
     ],
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'whole-blood',
-    'label': 'Whole blood',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-
-}, {
-    'id': 'bone-marrow',
-    'label': 'Bone marrow',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'buffy-coat',
-    'label': 'Buffy-Coat',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'dried-whole-blood',
-    'label': 'Dried whole blood',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'peripheral-blood-cells-vital',
-    'label': 'Peripheral blood mononuclear cells (PBMCs, viable)',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'blood-plasma',
-    'label': 'Plasma',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'plasma-edta',
-    'label': 'Plasma, EDTA',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'plasma-citrat',
-    'label': 'Plasma, Citrat',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'plasma-heparin',
-    'label': 'Plasma, Heparin',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'plasma-cell-free',
-    'label': 'Plasma, cell free',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'plasma-other',
-    'label': 'Plasma, other',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'blood-serum',
-    'label': 'Serum',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'ascites',
-    'label': 'Ascites',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'csf-liquor',
-    'label': 'CSF/Liquor',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'saliva',
-    'label': 'Saliva',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'stool-faeces',
-    'label': 'Stool/Faeces',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'urine',
-    'label': 'Urine',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'swab',
-    'label': 'Swab',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'liquid-other',
-    'label': 'Other liquid biosample/storage',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'tissue-ffpe',
-    'label': 'Tissue FFPE',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'tumor-tissue-ffpe',
-    'label': 'Tumor tissue (FFPE)',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'normal-tissue-ffpe',
-    'label': 'Normal tissue (FFPE)',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'other-tissue-ffpe',
-    'label': 'Other tissue (FFPE)',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'tissue-frozen',
-    'label': 'Tissue frozen',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'tumor-tissue-frozen',
-    'label': 'Tumor tissue (frozen)',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'normal-tissue-frozen',
-    'label': 'Normal tissue (frozen)',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'other-tissue-frozen',
-    'label': 'Other tissue (frozen)',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'tissue-other',
-    'label': 'Other tissue storage',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'dna',
-    'label': 'DNA',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'cf-dna',
-    'label': 'cfDNA',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'g-dna',
-    'label': 'gDNA',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'rna',
-    'label': 'RNA',
-    'type': 'custom',
-    'scopes': ['biosamples', 'individuals']
-}, {
-    'id': 'derivative-other',
-    'label': 'Other derivative',
-    'type': 'custom',
     'scopes': ['biosamples', 'individuals']
 }]
 
@@ -293,27 +127,27 @@ _FILTERS_TO_CQL = {
         'type': 'alphanumeric',
         'fhir_codesystem': 'SampleMaterialType',
         'values_mapper': lambda v: {
-            'OBI_0000655': ['whole-blood', 'dried-whole-blood'],  # (blood specimen)
-            'OBI_0002512': 'bone-marrow',  # (bone marrow)
-            'OBIB_0000036': 'buffy-coat',  # (buffy coat)
-            'CL_2000001': 'peripheral-blood-cells-vital',  # (peripheral blood mononuclear cell)
-            'OBI_0100016': ['blood-plasma', 'plasma-edta', 'plasma-citrat', 'plasma-heparin', 'plasma-cell-free',
+            'obi:0000655': ['whole-blood', 'dried-whole-blood'],  # (blood specimen)
+            'obi:0002512': 'bone-marrow',  # (bone marrow)
+            'obib:0000036': 'buffy-coat',  # (buffy coat)
+            'cl:2000001': 'peripheral-blood-cells-vital',  # (peripheral blood mononuclear cell)
+            'obi:0100016': ['blood-plasma', 'plasma-edta', 'plasma-citrat', 'plasma-heparin', 'plasma-cell-free',
                             'plasma-other'],  # (blood plasma specimen)
-            'OBI_0100017': 'blood-serum',  # (blood serum)
-            'UBERON_0007795': 'ascites',  # (ascites fluid)
-            'OBI_0002502': 'csf-liquor',  # (cerebrospinal fluid)
-            'OBI_0002507': 'saliva',  # (saliva)
-            'OBI_0002503': 'stool-faeces',  # (feces)
-            'OBI_0000651': 'urine',  # (urine)
-            'OBI_0002599': 'swab',  # (swab)
-            'OBI_2000009': 'liquid-other',  # (bodily fluid specimen)
-            'OBI_1200000': ['tissue-ffpe', 'tumor-tissue-ffpe', 'normal-tissue-ffpe', 'other-tissue-ffpe'],
+            'obi:0100017': 'blood-serum',  # (blood serum)
+            'uberon:0007795': 'ascites',  # (ascites fluid)
+            'obi:0002502': 'csf-liquor',  # (cerebrospinal fluid)
+            'obi:0002507': 'saliva',  # (saliva)
+            'obi:0002503': 'stool-faeces',  # (feces)
+            'obi:0000651': 'urine',  # (urine)
+            'obi:0002599': 'swab',  # (swab)
+            'obi:2000009': 'liquid-other',  # (bodily fluid specimen)
+            'obi:1200000': ['tissue-ffpe', 'tumor-tissue-ffpe', 'normal-tissue-ffpe', 'other-tissue-ffpe'],
             # (FFPE specimen)
-            'OBI_0000922': ['tissue-frozen', 'tumor-tissue-frozen', 'normal-tissue-frozen', 'other-tissue-frozen'],
-            'OBI_0001472': 'tissue-other',  # (specimen with known storage state)
-            'OBI_0001051': ['dna', 'cf-dna', 'g-dna'],  # (DNA extract)
-            'OBI_0000880': 'rna',  # (RNA extract)
-            'OBI_0001479': 'derivative-other',  # (specimen from organism)
+            'obi:0000922': ['tissue-frozen', 'tumor-tissue-frozen', 'normal-tissue-frozen', 'other-tissue-frozen'],
+            'obi:0001472': 'tissue-other',  # (specimen with known storage state)
+            'obi:0001051': ['dna', 'cf-dna', 'g-dna'],  # (DNA extract)
+            'obi:0000880': 'rna',  # (RNA extract)
+            'obi:0001479': 'derivative-other',  # (specimen from organism)
         }[v]
     }
 }

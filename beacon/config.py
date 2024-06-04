@@ -100,4 +100,5 @@ class BeaconConfig:
     molgenis: Optional[MolgenisParams]
     fhir: Optional[FHIRStoreParams]
     idp: Optional[IdpParams]
+    legacy_filters_enabled: Optional[bool] = False
 
