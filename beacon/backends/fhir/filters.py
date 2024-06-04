@@ -13,7 +13,7 @@ CURIE_REGEX = r'^([a-zA-Z0-9]*):\/?[a-zA-Z0-9.-_]*$'  # N.B. The dot (.) is allo
 
 
 def _match_ids_to_ontologies(id_: Union[str, list]):
-    if type(id_) == str:
+    if id_ is str:
         return re.match(CURIE_REGEX, id_)
     else:
         return all(re.match(CURIE_REGEX, i) for i in id_)
@@ -29,20 +29,20 @@ def apply_filters(filters: List[dict], scope='biosamples'):
         if "value" in f:
             f = AlphanumericFilter(**f)
             LOG.debug("Alphanumeric filter: %s %s %s", f.id, f.operator, f.value)
-            apply_alphanumeric_filter(query_conditions, f, scope, unsupported_filters)
+            apply_alphanumeric_filter(query_conditions, f, unsupported_filters, scope)
         elif "similarity" in f or "includeDescendantTerms" in f or _match_ids_to_ontologies(f["id"]):
             f = OntologyFilter(**f)
             LOG.debug("Ontology filter: %s", f.id)
-            apply_ontology_filter(query_conditions, f, scope, unsupported_filters)
+            apply_ontology_filter(query_conditions, f, unsupported_filters, scope)
         else:
             f = CustomFilter(**f)
             LOG.debug("Custom filter: %s", f.id)
-            apply_custom_filter(query_conditions, f, scope, unsupported_filters)
+            apply_custom_filter(query_conditions, f, unsupported_filters, scope)
     return query_conditions.values(), unsupported_filters
 
 
-def apply_ontology_filter(parameters: dict, filter_: OntologyFilter, scope='biosamples', unsupported_filters=[]):
-    if type(filter_.id) == str:
+def apply_ontology_filter(parameters: dict, filter_: OntologyFilter, unsupported_filters: List, scope='biosamples'):
+    if filter_.id is str:
         ontology_terms = [filter_.id]
     else:
         ontology_terms = filter_.id
@@ -56,7 +56,7 @@ def apply_ontology_filter(parameters: dict, filter_: OntologyFilter, scope='bios
                 code_system, code = curie_prefix, curie_reference
             else:
                 # for all the others ontology parameters, we might support different ontologies for the query
-                parameter_args = get_cql_condition_arguments_from_beacon_filter(ot)
+                parameter_args = get_cql_condition_arguments_from_beacon_filter(ot, unsupported_filters)
                 parameter_type, code_system, code, extension = parameter_args['cql_parameter_class'], \
                     parameter_args['fhir_codesystem'], parameter_args['value'], parameter_args['extension']
 
@@ -66,8 +66,8 @@ def apply_ontology_filter(parameters: dict, filter_: OntologyFilter, scope='bios
             logging.error(f'Filter with ontology term {ot} is not supported')
 
 
-def apply_alphanumeric_filter(parameters: dict, filter_: AlphanumericFilter, scope='biosamples',
-                              unsupported_filters=[]):
+def apply_alphanumeric_filter(parameters: dict, filter_: AlphanumericFilter, unsupported_filters: List, scope='biosamples'):
+
     if type(filter_.value) in (str, int):
         values = [filter_.value]
     else:
@@ -83,7 +83,7 @@ def apply_alphanumeric_filter(parameters: dict, filter_: AlphanumericFilter, sco
             except KeyError:
                 parameter_value = ''
 
-            if type(parameter_value) == list:
+            if parameter_value is list:
                 for pv in parameter_value:
                     parameter.add_condition_parameters(operator=filter_.operator, value=pv)
             else:
@@ -92,11 +92,11 @@ def apply_alphanumeric_filter(parameters: dict, filter_: AlphanumericFilter, sco
         logging.error(f'Filter {values} is not supported')
 
 
-def apply_custom_filter(parameters: dict, filter: CustomFilter, scope='biosamples', unsupported_filters=[]):
-    if type(filter.id) in (str, int):
-        values = [filter.id]
+def apply_custom_filter(parameters: dict, filter_: CustomFilter, unsupported_filters: List, scope='biosamples'):
+    if type(filter_.id) in (str, int):
+        values = [filter_.id]
     else:
-        values = filter.id
+        values = filter_.id
     for value in values:
         try:
             parameter_args = get_cql_condition_arguments_from_beacon_filter(value, unsupported_filters)
