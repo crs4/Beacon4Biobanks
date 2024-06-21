@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import Optional, List, Iterable
 
 
 @dataclass
@@ -90,7 +90,7 @@ class IdpParams:
     user_info_url: str
     jwk_set_url: str
     issuer: str
-    audience: Optional[str]
+    audience: Optional[List[str]]
 
 
 @dataclass

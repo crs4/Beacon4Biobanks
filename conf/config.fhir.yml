@@ -47,3 +47,5 @@ idp:
   user_info_url: ""
   jwk_set_url: ""
   issuer: ""
+  audience:
+    - ""
