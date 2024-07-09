@@ -66,8 +66,8 @@ def apply_ontology_filter(parameters: dict, filter_: OntologyFilter, unsupported
             logging.error(f'Filter with ontology term {ot} is not supported')
 
 
-def apply_alphanumeric_filter(parameters: dict, filter_: AlphanumericFilter, unsupported_filters: List, scope='biosamples'):
-
+def apply_alphanumeric_filter(parameters: dict, filter_: AlphanumericFilter, unsupported_filters: List,
+                              scope='biosamples'):
     if type(filter_.value) in (str, int):
         values = [filter_.value]
     else:
@@ -83,7 +83,7 @@ def apply_alphanumeric_filter(parameters: dict, filter_: AlphanumericFilter, uns
             except KeyError:
                 parameter_value = ''
 
-            if parameter_value is list:
+            if isinstance(parameter_value, list):
                 for pv in parameter_value:
                     parameter.add_condition_parameters(operator=filter_.operator, value=pv)
             else:

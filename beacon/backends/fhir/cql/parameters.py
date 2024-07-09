@@ -53,7 +53,6 @@ class YearOfBirth(Parameter):
 
 
 class SampleType(Parameter):
-    # CONDITION = "Specimen.type.coding contains Code '{value}' from SampleMaterialType"
     CONDITION = "exists(from [Specimen] S where S.type.coding contains Code '{value}' from SampleMaterialType)"
 
 
