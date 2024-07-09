@@ -65,7 +65,7 @@ _FILTERS = [{
     'allowed_values': [
         'obi:0000655',  # (blood specimen)
         'obi:0002512',  # (bone marrow)
-        'obib:0000036',  # (buffy coat)
+        'obi:0000036',  # (buffy coat)
         'cl:2000001',  # (peripheral blood mononuclear cell)
         'obi:0100016',  # (blood plasma specime)
         'obi:0100017',  # (blood serum)
@@ -131,7 +131,7 @@ _FILTERS_TO_CQL = {
         'values_mapper': lambda v: {
             'obi:0000655': ['whole-blood', 'dried-whole-blood'],  # (blood specimen)
             'obi:0002512': 'bone-marrow',  # (bone marrow)
-            'obib:0000036': 'buffy-coat',  # (buffy coat)
+            'obi:0000036': 'buffy-coat',  # (buffy coat)
             'cl:2000001': 'peripheral-blood-cells-vital',  # (peripheral blood mononuclear cell)
             'obi:0100016': ['blood-plasma', 'plasma-edta', 'plasma-citrat', 'plasma-heparin', 'plasma-cell-free',
                             'plasma-other'],  # (blood plasma specimen)
