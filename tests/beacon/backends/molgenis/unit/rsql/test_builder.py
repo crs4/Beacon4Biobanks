@@ -59,6 +59,7 @@ def multiple_instances_in_parameter():
         'expected_rsql': '(description=in=(desc_1,desc_2)) and (description=in=(desc_3,desc_4))'
     }
 
+
 @pytest.fixture
 def multiple_parameters():
     p1 = Parameter('description', 'in', ['desc_1', 'desc_2'])
@@ -67,6 +68,7 @@ def multiple_parameters():
         'parameters': [p1, p2],
         'expected_rsql': '(description=in=(desc_1,desc_2)) and (name=like="name_1" or name=like="name_2")'
     }
+
 
 def test_like_param_single_value(single_value_like_parameter):
     """
@@ -118,6 +120,7 @@ def test_in_param_multiple_instances(multiple_instances_in_parameter):
     """
     rsql = create_rsql_query(multiple_instances_in_parameter['parameters'])
     assert multiple_instances_in_parameter['expected_rsql'] == rsql
+
 
 def test_multiple_params_of_different_type(multiple_parameters):
     """
