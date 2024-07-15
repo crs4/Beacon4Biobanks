@@ -13,7 +13,7 @@ CURIE_REGEX = r'^([a-zA-Z0-9]*):\/?[a-zA-Z0-9.-_]*$'  # N.B. The dot (.) is allo
 
 
 def _match_ids_to_ontologies(id_: Union[str, list]):
-    if id_ is str:
+    if isinstance(id_, str):
         return re.match(CURIE_REGEX, id_)
     else:
         return all(re.match(CURIE_REGEX, i) for i in id_)
