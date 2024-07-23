@@ -2,7 +2,7 @@ import pytest
 
 from beacon.backends.fhir.cql.parameters import DiagnosisBiosamples, SexBiosample
 from beacon.backends.fhir.filters import _match_ids_to_ontologies, apply_filters, apply_ontology_filter, \
-    apply_alphanumeric_filter
+    apply_alphanumeric_filter, apply_custom_filter
 from beacon.request.model import OntologyFilter, Similarity, AlphanumericFilter, Operator, CustomFilter
 from tests.conf.conftest import single_disease_biosample_parameter, multiple_diseases_biosample_parameter, \
     single_sex_biosample_parameter, multiple_sex_biosample_parameter, single_disease_biosample_parameter_as_custom, \
@@ -202,10 +202,36 @@ def test_apply_alphanumeric_filter_not_supported():
 
 def test_apply_custom_filter_string_value():
     filter = CustomFilter(id='Orphanet_166', scope=None)
+    parameters = dict()
+    apply_custom_filter(parameters, filter, list())
+    assert len(parameters) == 1
+    assert parameters['diagnosis'].conditions == [{'code': 'Orphanet_166', 'code_system': 'ordo'}]
 
 
-def test_apply_custom_filter_not_supported():
-    pass
+@pytest.mark.xfail(raises=KeyError)
+def test_apply_custom_filter_string_value_not_supported():
+    filter = CustomFilter(id='Xxx_166', scope=None)
+    parameters = dict()
+    unsupported_filters = list()
+    apply_custom_filter(parameters, filter, unsupported_filters)
+    assert len(unsupported_filters) == 1
+
+
+def test_apply_custom_filter_list_value():
+    filter = CustomFilter(id=['Orphanet_166', 'Orphanet_457260'], scope=None)
+    parameters = dict()
+    apply_custom_filter(parameters, filter, list())
+    assert len(parameters) == 1
+    assert parameters['diagnosis'].conditions == [{'code': 'Orphanet_166', 'code_system': 'ordo'},
+                                                  {'code': 'Orphanet_457260', 'code_system': 'ordo'}]
+
+
+def test_apply_custom_filter_list_value_not_supported():
+    filter = CustomFilter(id=['Xxx_xxx', 'Orphanet_457260'], scope=None)
+    parameters = dict()
+    unsupported_filters = list()
+    apply_custom_filter(parameters, filter, unsupported_filters)
+    assert len(unsupported_filters) == 1
 
 
 def test_get_or_create_parameter():
