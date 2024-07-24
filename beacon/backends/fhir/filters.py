@@ -2,9 +2,12 @@ import logging
 import re
 from typing import List, Union
 
+from aiohttp.web_exceptions import HTTPBadRequest
+
 from beacon.backends.fhir.cql.parameters import get_cql_parameter_factory
 from beacon.backends.fhir.mappings import get_cql_condition_arguments_from_beacon_filter
 from beacon.backends.fhir.mappings import get_unsupported_filters
+from beacon.backends.fhir.utils import validate_disease_filter
 from beacon.request.model import AlphanumericFilter, CustomFilter, OntologyFilter
 
 LOG = logging.getLogger(__name__)
@@ -23,6 +26,9 @@ def apply_filters(filters: List[dict], scope='biosamples'):
     query_conditions = {}
     unsupported_filters = []
     for f in filters:
+        if not validate_disease_filter(f['id']):
+            raise HTTPBadRequest(
+                text="Invalid query: different ontology specs combined in the same array for Disease filter parameter")
         if f['id'] in get_unsupported_filters():  # skip filter
             unsupported_filters.append(f['id'])
             continue
@@ -42,7 +48,7 @@ def apply_filters(filters: List[dict], scope='biosamples'):
 
 
 def apply_ontology_filter(parameters: dict, filter_: OntologyFilter, unsupported_filters: List, scope='biosamples'):
-    if filter_.id is str:
+    if isinstance(filter_.id, str):
         ontology_terms = [filter_.id]
     else:
         ontology_terms = filter_.id

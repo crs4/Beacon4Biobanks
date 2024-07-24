@@ -131,7 +131,7 @@ E.url = 'https://fhir.bbmri.de/StructureDefinition/SampleDiagnosis' and (ordo.id
 
 
 @pytest.fixture(scope='session', autouse=True)
-def disease_single_filter():
+def disease_single_filter_into_array_v3_spec():
     return {
         "meta": {
             "apiVersion": "v2.0"
@@ -139,6 +139,48 @@ def disease_single_filter():
         "query": {
             "filters": [
                 {"id": ["Orphanet_166"]}
+            ]
+            , "requestedGranularity": "count"
+        }
+    }
+
+@pytest.fixture(scope='session', autouse=True)
+def disease_single_filter_string_v3_spec():
+    return {
+        "meta": {
+            "apiVersion": "v2.0"
+        },
+        "query": {
+            "filters": [
+                {"id": "Orphanet_166"}
+            ]
+            , "requestedGranularity": "count"
+        }
+    }
+
+@pytest.fixture(scope='session', autouse=True)
+def disease_single_filter_into_array_v4_spec():
+    return {
+        "meta": {
+            "apiVersion": "v2.0"
+        },
+        "query": {
+            "filters": [
+                {"id": ["ordo:Orphanet_166"]}
+            ]
+            , "requestedGranularity": "count"
+        }
+    }
+
+@pytest.fixture(scope='session', autouse=True)
+def disease_single_filter_string_v4_spec():
+    return {
+        "meta": {
+            "apiVersion": "v2.0"
+        },
+        "query": {
+            "filters": [
+                {"id": "ordo:Orphanet_166"}
             ]
             , "requestedGranularity": "count"
         }
@@ -176,7 +218,7 @@ def empty_filter():
 
 
 @pytest.fixture(scope='session', autouse=True)
-def disease_v4_and_v3_specs_filter():
+def disease_v4_and_v3_specs_filter_different_instances():
     return {
         "meta": {
             "apiVersion": "v2.0"
@@ -186,6 +228,21 @@ def disease_v4_and_v3_specs_filter():
                 {
                     "id": ["ordo:Orphanet_166"]}, {
                     "id": ["Orphanet_457260"]}]
+            , "requestedGranularity": "count"
+        }
+    }
+
+
+@pytest.fixture(scope='session', autouse=True)
+def disease_v4_and_v3_specs_filter_same_array():
+    return {
+        "meta": {
+            "apiVersion": "v2.0"
+        },
+        "query": {
+            "filters": [
+                {
+                    "id": ["ordo:Orphanet_166", "Orphanet_457260"]}]
             , "requestedGranularity": "count"
         }
     }
@@ -269,7 +326,7 @@ def multiple_values_both_supported_and_unsupported_filter():
             "filters": [
                 {
                     "id": [
-                        "Orphanet_2593",
+                        "ordo:Orphanet_2593",
                         "ordo:Orphanet_2594"
                     ]
                 },

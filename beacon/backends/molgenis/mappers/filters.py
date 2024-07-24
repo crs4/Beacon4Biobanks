@@ -102,8 +102,10 @@ if conf.service.legacy_filters_enabled:
     })
 
 
-def get_filter_spec(filter_id):
+def get_filter_spec(filter_id, filter_value=''):
     try:
+        if filter_id == 'ejprd' and filter_value == 'Biobank':
+            return FILTER_SPEC['terms'][f'{filter_id}:{filter_value}']
         return FILTER_SPEC['terms'][filter_id]
     except KeyError:
         return None

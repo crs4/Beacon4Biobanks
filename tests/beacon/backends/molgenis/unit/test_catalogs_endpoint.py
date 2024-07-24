@@ -6,9 +6,12 @@ from aiohttp_middlewares import cors_middleware
 
 from beacon.request.routes import routes
 from beacon.response import middlewares
-from tests.conf.conftest import disease_single_filter, phenotype_filter, resource_type_biobank_filter, \
+from tests.conf.conftest import disease_single_filter_into_array_v3_spec, phenotype_filter, \
+    resource_type_biobank_filter, \
     resource_type_patient_registry_filter, resource_type_registry_filter_multiple_with_one_supported, \
-    resource_type_registry_filter_multiple_all_unsupported, disease_v4_and_v3_specs_filter, country_filter
+    resource_type_registry_filter_multiple_all_unsupported, disease_v4_and_v3_specs_filter_different_instances, \
+    country_filter, \
+    disease_single_filter_into_array_v4_spec, disease_single_filter_string_v4_spec, disease_single_filter_string_v3_spec
 
 VALID_FILTERS_RESPONSE = b'500: Connection to data source failed'
 NO_VALID_FILTERS_RESPONSE = b'No valid query params provided. At least one supported and valid parameter should be provided'
@@ -37,18 +40,59 @@ def get_json(content):
 
 
 @pytest.mark.asyncio
-async def test_get_catalogs_by_single_disease_code_valid(aiohttp_client, disease_single_filter):
+async def test_get_catalogs_by_single_disease_code_valid(aiohttp_client, disease_single_filter_into_array_v3_spec):
     beacon_client = await get_beacon_client(aiohttp_client)
-    r = await beacon_client.post(CATALOGS_ENDPOINT, data=json.dumps(disease_single_filter))
+    r = await beacon_client.post(CATALOGS_ENDPOINT, data=json.dumps(disease_single_filter_into_array_v3_spec))
     assert r.status == 500
     content = await(r.content.read())
     assert content == VALID_FILTERS_RESPONSE
 
 
 @pytest.mark.asyncio
-async def test_get_catalogs_by_disease_multiple_specs(aiohttp_client, disease_v4_and_v3_specs_filter):
+async def test_get_catalogs_by_disease_multiple_specs(aiohttp_client,
+                                                      disease_v4_and_v3_specs_filter_different_instances):
     beacon_client = await get_beacon_client(aiohttp_client)
-    r = await beacon_client.post(CATALOGS_ENDPOINT, data=json.dumps(disease_v4_and_v3_specs_filter))
+    r = await beacon_client.post(CATALOGS_ENDPOINT, data=json.dumps(disease_v4_and_v3_specs_filter_different_instances))
+    assert r.status == 500
+    content = await(r.content.read())
+    assert content == VALID_FILTERS_RESPONSE
+
+
+@pytest.mark.asyncio
+async def test_get_individuals_by_single_disease_code_array_v3_spec(aiohttp_client,
+                                                                    disease_single_filter_into_array_v3_spec):
+    beacon_client = await get_beacon_client(aiohttp_client)
+    r = await beacon_client.post(CATALOGS_ENDPOINT, data=json.dumps(disease_single_filter_into_array_v3_spec))
+    assert r.status == 500
+    content = await(r.content.read())
+    assert content == VALID_FILTERS_RESPONSE
+
+
+@pytest.mark.asyncio
+async def test_get_individuals_by_single_disease_code_string_v3_spec(aiohttp_client,
+                                                                     disease_single_filter_string_v3_spec):
+    beacon_client = await get_beacon_client(aiohttp_client)
+    r = await beacon_client.post(CATALOGS_ENDPOINT, data=json.dumps(disease_single_filter_string_v3_spec))
+    assert r.status == 500
+    content = await(r.content.read())
+    assert content == VALID_FILTERS_RESPONSE
+
+
+@pytest.mark.asyncio
+async def test_get_catalogs_by_single_disease_code_array_v4_spec(aiohttp_client,
+                                                                 disease_single_filter_into_array_v4_spec):
+    beacon_client = await get_beacon_client(aiohttp_client)
+    r = await beacon_client.post(CATALOGS_ENDPOINT, data=json.dumps(disease_single_filter_into_array_v4_spec))
+    assert r.status == 500
+    content = await(r.content.read())
+    assert content == VALID_FILTERS_RESPONSE
+
+
+@pytest.mark.asyncio
+async def test_get_individuals_by_single_disease_code_string_v4_spec(aiohttp_client,
+                                                                     disease_single_filter_string_v4_spec):
+    beacon_client = await get_beacon_client(aiohttp_client)
+    r = await beacon_client.post(CATALOGS_ENDPOINT, data=json.dumps(disease_single_filter_string_v4_spec))
     assert r.status == 500
     content = await(r.content.read())
     assert content == VALID_FILTERS_RESPONSE

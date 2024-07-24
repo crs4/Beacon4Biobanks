@@ -153,3 +153,9 @@ def get_filtering_terms_results(scope=None):
 
 def encode(string):
     return base64.b64encode(string.encode('ascii'))
+
+
+def validate_disease_filter(filter):
+    if isinstance(filter, str):
+        return True
+    return not any(f.startswith('ordo:') for f in filter) or not any(f.startswith('Orphanet_') for f in filter)

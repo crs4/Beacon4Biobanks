@@ -6,15 +6,18 @@ from aiohttp_middlewares import cors_middleware
 
 from beacon.request.routes import routes
 from beacon.response import middlewares
-from tests.conf.conftest import disease_single_filter, not_supported_filter, \
-    empty_filter, disease_v4_and_v3_specs_filter, \
+from tests.conf.conftest import disease_single_filter_into_array_v3_spec, not_supported_filter, \
+    empty_filter, disease_v4_and_v3_specs_filter_different_instances, \
     sex_filter, specimen_type_multiple_internal_transcoding_filter, \
     specimen_type_multiple_values_filter, phenotype_filter, \
     multiple_values_both_supported_and_unsupported_filter, age_this_year_filter, \
-    age_at_diagnosis_filter, causative_genes_filter, symptom_onset_filter
+    age_at_diagnosis_filter, causative_genes_filter, symptom_onset_filter, disease_single_filter_string_v3_spec, \
+    disease_single_filter_into_array_v4_spec, disease_single_filter_string_v4_spec, \
+    disease_v4_and_v3_specs_filter_same_array
 
 VALID_FILTERS_RESPONSE = b'500: Error contacting data service'
 NO_VALID_FILTERS_RESPONSE = b'No valid query params provided. At least one supported and valid parameter should be provided'
+INVALID_DISEASE_QUERY_PARAMS = b'Invalid query: different ontology specs combined in the same array for Disease filter parameter'
 INDIVIDUALS_ENDPOINT = 'api/individuals'
 
 
@@ -40,9 +43,40 @@ def get_json(content):
 
 
 @pytest.mark.asyncio
-async def test_get_individuals_by_single_disease_code_valid(aiohttp_client, disease_single_filter):
+async def test_get_individuals_by_single_disease_code_array_v3_spec(aiohttp_client,
+                                                                    disease_single_filter_into_array_v3_spec):
     beacon_client = await get_beacon_client(aiohttp_client)
-    r = await beacon_client.post(INDIVIDUALS_ENDPOINT, data=json.dumps(disease_single_filter))
+    r = await beacon_client.post(INDIVIDUALS_ENDPOINT, data=json.dumps(disease_single_filter_into_array_v3_spec))
+    assert r.status == 500
+    content = await(r.content.read())
+    assert content == VALID_FILTERS_RESPONSE
+
+
+@pytest.mark.asyncio
+async def test_get_individuals_by_single_disease_code_string_v3_spec(aiohttp_client,
+                                                                     disease_single_filter_string_v3_spec):
+    beacon_client = await get_beacon_client(aiohttp_client)
+    r = await beacon_client.post(INDIVIDUALS_ENDPOINT, data=json.dumps(disease_single_filter_string_v3_spec))
+    assert r.status == 500
+    content = await(r.content.read())
+    assert content == VALID_FILTERS_RESPONSE
+
+
+@pytest.mark.asyncio
+async def test_get_individuals_by_single_disease_code_array_v4_spec(aiohttp_client,
+                                                                    disease_single_filter_into_array_v4_spec):
+    beacon_client = await get_beacon_client(aiohttp_client)
+    r = await beacon_client.post(INDIVIDUALS_ENDPOINT, data=json.dumps(disease_single_filter_into_array_v4_spec))
+    assert r.status == 500
+    content = await(r.content.read())
+    assert content == VALID_FILTERS_RESPONSE
+
+
+@pytest.mark.asyncio
+async def test_get_individuals_by_single_disease_code_string_v4_spec(aiohttp_client,
+                                                                     disease_single_filter_string_v4_spec):
+    beacon_client = await get_beacon_client(aiohttp_client)
+    r = await beacon_client.post(INDIVIDUALS_ENDPOINT, data=json.dumps(disease_single_filter_string_v4_spec))
     assert r.status == 500
     content = await(r.content.read())
     assert content == VALID_FILTERS_RESPONSE
@@ -68,12 +102,23 @@ async def test_get_individuals_empty_filter(aiohttp_client, empty_filter):
 
 @pytest.mark.asyncio
 async def test_get_individuals_by_multiple_disease_code_old_and_new_specs(aiohttp_client,
-                                                                          disease_v4_and_v3_specs_filter):
+                                                                          disease_v4_and_v3_specs_filter_different_instances):
     beacon_client = await get_beacon_client(aiohttp_client)
-    r = await beacon_client.post(INDIVIDUALS_ENDPOINT, data=json.dumps(disease_v4_and_v3_specs_filter))
+    r = await beacon_client.post(INDIVIDUALS_ENDPOINT,
+                                 data=json.dumps(disease_v4_and_v3_specs_filter_different_instances))
     assert r.status == 500
     content = await(r.content.read())
     assert content == VALID_FILTERS_RESPONSE
+
+
+@pytest.mark.asyncio
+async def test_get_individuals_by_multiple_disease_code_old_and_new_specs_same_array(aiohttp_client,
+                                                                                     disease_v4_and_v3_specs_filter_same_array):
+    beacon_client = await get_beacon_client(aiohttp_client)
+    r = await beacon_client.post(INDIVIDUALS_ENDPOINT, data=json.dumps(disease_v4_and_v3_specs_filter_same_array))
+    assert r.status == 400
+    content = await(r.content.read())
+    assert content == INVALID_DISEASE_QUERY_PARAMS
 
 
 @pytest.mark.asyncio
