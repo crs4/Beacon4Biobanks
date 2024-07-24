@@ -216,18 +216,21 @@ def get_default_schema(entity_type):
 
 
 def get_schema_from_query_params(entity_type, params):
-    if len(params.meta.requested_schemas) == 0:  # gets the default schema
-        schema = get_default_schema(entity_type)
-    else:  # gets the first supported schema
-        for s in params.meta.requested_schemas:
-            try:
-                schema = get_schema(entity_type, s)
-                break
-            except SchemaNotSupported:
-                continue
-        else:
-            raise web.HTTPBadRequest(text="Requested schema not supported")
-    return schema
+    try:
+        if len(params.meta.requested_schemas) == 0:  # gets the default schema
+            schema = get_default_schema(entity_type)
+        else:  # gets the first supported schema
+            for s in params.meta.requested_schemas:
+                try:
+                    schema = get_schema(entity_type, s)
+                    break
+                except SchemaNotSupported:
+                    continue
+            else:
+                raise web.HTTPBadRequest(text="Requested schema not supported")
+        return schema
+    except SchemaNotSupported as e:
+        raise web.HTTPBadRequest(text="Requested schema not supported")
 
 
 def get_entry_types():

@@ -9,6 +9,13 @@ FILTER_SPEC = {
             "operator": "in",
             "mapper": lambda v: v.replace("ordo:Orphanet_", "ORPHA:"),
         },
+        "Orphanet_": {  # legacy filter for Orphanet code for to support old vp api spec
+            "type": "custom",
+            "attribute": "diagnosis_available",
+            "label": "Disease using an orphanet code (e.g., Orphanet_589)",
+            "operator": "in",
+            "mapper": lambda v: v.replace("Orphanet_", "ORPHA:"),
+        },
         "ejprd:Biobank": {
             "type": "ontology",
             "attribute": "",
@@ -95,12 +102,8 @@ if conf.service.legacy_filters_enabled:
     })
 
 
-def get_filter_spec(ot):
-    if ot == 'ejprd:Biobank':
-        return ot
-    else:
-        curie_prefix, curie_value = ot.split(':')
-        try:
-            return FILTER_SPEC['terms'][curie_prefix]
-        except KeyError:
-            return None
+def get_filter_spec(filter_id):
+    try:
+        return FILTER_SPEC['terms'][filter_id]
+    except KeyError:
+        return None

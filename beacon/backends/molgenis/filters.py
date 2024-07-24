@@ -61,8 +61,6 @@ def apply_ontology_filter(_filter: OntologyFilter):
 
     for i, ot in enumerate(ontology_terms):
         filter_spec = get_filter_spec(ot)
-        if filter_spec == 'ejprd:Biobank':  # skip it but without marking it as unsupported
-            continue
         if filter_spec is None:
             unsupported_terms.append(ot)
             continue

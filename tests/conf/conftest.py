@@ -396,3 +396,103 @@ def symptom_onset_filter():
             }]
         }
     }
+
+
+@pytest.fixture(scope='session', autouse=True)
+def resource_type_biobank_filter():
+    return {
+        "meta": {
+            "apiVersion": "v2.0"
+
+        },
+        "query": {
+            "filters": [
+                {
+                    "id": ["ejprd:Biobank"]}
+            ]
+            , "requestedGranularity": "count"
+        }
+    }
+
+
+@pytest.fixture(scope='session', autouse=True)
+def resource_type_patient_registry_filter():
+    return {
+        "meta": {
+            "apiVersion": "v2.0"
+
+        },
+        "query": {
+            "filters": [
+                {
+                    "id": ["ejprd:PatienRegistry"]}
+            ]
+            , "requestedGranularity": "count"
+        }
+    }
+
+
+@pytest.fixture(scope='session', autouse=True)
+def resource_type_registry_filter_multiple_with_one_supported():
+    return {
+        "meta": {
+            "apiVersion": "v2.0"
+
+        },
+        "query": {
+            "filters": [
+                {
+                    "id": ["ejprd:Biobank"]},
+                {
+                    "id": ["ejprd:PatienRegistry"]},
+                {
+                    "id": ["ejprd:Guideline"]},
+                {
+                    "id": ["dcat:Dataset"]},
+
+            ]
+            , "requestedGranularity": "count"
+        }
+    }
+
+
+@pytest.fixture(scope='session', autouse=True)
+def resource_type_registry_filter_multiple_all_unsupported():
+    return {
+        "meta": {
+            "apiVersion": "v2.0"
+
+        },
+        "query": {
+            "filters": [
+                {
+                    "id": ["ejprd:PatienRegistry"]},
+                {
+                    "id": ["ejprd:Guideline"]},
+                {
+                    "id": ["dcat:Dataset"]},
+
+            ]
+            , "requestedGranularity": "count"
+        }
+    }
+
+
+@pytest.fixture(scope='session', autouse=True)
+def country_filter():
+    return {
+        "meta": {
+            "apiVersion": "v2.0"
+
+        },
+        "query": {
+            "filters": [
+                {
+                    "id": "dct:spatial",
+                    "operator": "=",
+                    "value": ["IT", "DE"]
+                }
+            ]
+            , "requestedGranularity": "count"
+        }
+    }
