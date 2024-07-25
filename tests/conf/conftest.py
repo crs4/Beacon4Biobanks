@@ -144,6 +144,7 @@ def disease_single_filter_into_array_v3_spec():
         }
     }
 
+
 @pytest.fixture(scope='session', autouse=True)
 def disease_single_filter_string_v3_spec():
     return {
@@ -158,6 +159,7 @@ def disease_single_filter_string_v3_spec():
         }
     }
 
+
 @pytest.fixture(scope='session', autouse=True)
 def disease_single_filter_into_array_v4_spec():
     return {
@@ -171,6 +173,7 @@ def disease_single_filter_into_array_v4_spec():
             , "requestedGranularity": "count"
         }
     }
+
 
 @pytest.fixture(scope='session', autouse=True)
 def disease_single_filter_string_v4_spec():
@@ -266,6 +269,23 @@ def sex_filter():
 
 
 @pytest.fixture(scope='session', autouse=True)
+def sex_filter_value_not_allowed():
+    return {
+        "meta": {
+            "apiVersion": "2.0",
+            "requestedGranularity": "count"
+        },
+        "query": {
+            "filters": [{
+                "id": "ncit:C28421",
+                "operator": "=",
+                "value": ["ncit:C36843"]
+            }]
+        }
+    }
+
+
+@pytest.fixture(scope='session', autouse=True)
 def specimen_type_multiple_internal_transcoding_filter():
     return {
         "meta": {
@@ -294,6 +314,23 @@ def specimen_type_multiple_values_filter():
                 "id": "ncit:C70713",
                 "operator": "=",
                 "value": ["obi:0002512", "obi:0000036"]
+            }]
+        }
+    }
+
+
+@pytest.fixture(scope='session', autouse=True)
+def specimen_type_value_not_allowed():
+    return {
+        "meta": {
+            "apiVersion": "2.0",
+            "requestedGranularity": "count"
+        },
+        "query": {
+            "filters": [{
+                "id": "ncit:C70713",
+                "operator": "=",
+                "value": ["obi:0002694"]
             }]
         }
     }

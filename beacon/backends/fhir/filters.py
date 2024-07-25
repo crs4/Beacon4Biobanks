@@ -87,7 +87,8 @@ def apply_alphanumeric_filter(parameters: dict, filter_: AlphanumericFilter, uns
             try:
                 parameter_value = parameter_args['values_mapper'](v)
             except KeyError:
-                parameter_value = ''
+                raise HTTPBadRequest(
+                    text=f'Invalid query: value {v} not allowed for filter {filter_.id}')
 
             if isinstance(parameter_value, list):
                 for pv in parameter_value:

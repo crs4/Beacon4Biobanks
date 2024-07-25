@@ -13,7 +13,7 @@ from tests.conf.conftest import disease_single_filter_into_array_v3_spec, not_su
     multiple_values_both_supported_and_unsupported_filter, age_this_year_filter, \
     age_at_diagnosis_filter, causative_genes_filter, symptom_onset_filter, disease_single_filter_string_v3_spec, \
     disease_single_filter_into_array_v4_spec, disease_single_filter_string_v4_spec, \
-    disease_v4_and_v3_specs_filter_same_array
+    disease_v4_and_v3_specs_filter_same_array, sex_filter_value_not_allowed
 
 VALID_FILTERS_RESPONSE = b'500: Error contacting data service'
 NO_VALID_FILTERS_RESPONSE = b'No valid query params provided. At least one supported and valid parameter should be provided'
@@ -128,6 +128,15 @@ async def test_get_individuals_by_sex(aiohttp_client, sex_filter):
     assert r.status == 500
     content = await(r.content.read())
     assert content == VALID_FILTERS_RESPONSE
+
+
+@pytest.mark.asyncio
+async def test_get_individuals_by_sex_not_allowed_value(aiohttp_client, sex_filter_value_not_allowed):
+    beacon_client = await get_beacon_client(aiohttp_client)
+    r = await beacon_client.post(INDIVIDUALS_ENDPOINT, data=json.dumps(sex_filter_value_not_allowed))
+    assert r.status == 400
+    content = await(r.content.read())
+    assert content == b'Invalid query: value ncit:C36843 not allowed for filter ncit:C28421'
 
 
 @pytest.mark.asyncio
