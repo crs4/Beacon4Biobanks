@@ -35,15 +35,21 @@ def apply_filters(filters: List[dict], scope='biosamples'):
         if "value" in f:
             f = AlphanumericFilter(**f)
             LOG.debug("Alphanumeric filter: %s %s %s", f.id, f.operator, f.value)
-            query_conditions.append(apply_alphanumeric_filter(f, unsupported_filters, scope))
+            condition = apply_alphanumeric_filter(f, unsupported_filters, scope)
+            if condition is not None:
+                query_conditions.append(condition)
         elif "similarity" in f or "includeDescendantTerms" in f or _match_ids_to_ontologies(f["id"]):
             f = OntologyFilter(**f)
             LOG.debug("Ontology filter: %s", f.id)
-            query_conditions.append(apply_ontology_filter(f, unsupported_filters, scope))
+            condition = apply_ontology_filter(f, unsupported_filters, scope)
+            if condition is not None:
+                query_conditions.append(condition)
         else:
             f = CustomFilter(**f)
             LOG.debug("Custom filter: %s", f.id)
-            query_conditions.append(apply_custom_filter(f, unsupported_filters, scope))
+            condition = apply_custom_filter(f, unsupported_filters, scope)
+            if condition is not None:
+                query_conditions.append(apply_custom_filter(f, unsupported_filters, scope))
     return query_conditions, unsupported_filters
 
 
