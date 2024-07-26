@@ -29,10 +29,6 @@ def get_resources(entry_id, qparams, granularity=None):
         resources = list(map(map_resource(schema["schema"]), result["items"]))
 
         return schema, result['total'], resources, unsupported_filters
-    # except (Exception) as e:
-    #    LOG.error("Generic error")
-    #    LOG.error(e)
-    #    raise web.HTTPInternalServerError(reason="Connection to data source failed")
     except (MolgenisRequestError, ConnectionError) as e:
         LOG.error("Error contacting molgenis")
         LOG.error(e)
