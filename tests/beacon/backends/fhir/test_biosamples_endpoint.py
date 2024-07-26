@@ -77,7 +77,7 @@ async def test_get_biosamples_by_single_disease_code_array_v4_spec(aiohttp_clien
     beacon_client = await get_beacon_client(aiohttp_client)
     r = await beacon_client.post(BIOSAMPLES_ENDPOINT, data=json.dumps(disease_single_filter_into_array_v4_spec))
     assert r.status == 500
-    content = await(r.content.read())
+    content = await r.content.read()
     assert content == VALID_FILTERS_RESPONSE
 
 
@@ -126,7 +126,7 @@ async def test_get_biosamples_by_multiple_disease_code_old_and_new_specs_same_ar
     beacon_client = await get_beacon_client(aiohttp_client)
     r = await beacon_client.post(BIOSAMPLES_ENDPOINT, data=json.dumps(disease_v4_and_v3_specs_filter_same_array))
     assert r.status == 400
-    content = await(r.content.read())
+    content = await r.content.read()
     assert content == INVALID_DISEASE_QUERY_PARAMS
 
 

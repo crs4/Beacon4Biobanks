@@ -23,7 +23,7 @@ def _match_ids_to_ontologies(id_: Union[str, list]):
 
 
 def apply_filters(filters: List[dict], scope='biosamples'):
-    query_conditions = {}
+    query_conditions = list()
     unsupported_filters = []
     for f in filters:
         if not validate_disease_filter(f['id']):
@@ -35,23 +35,24 @@ def apply_filters(filters: List[dict], scope='biosamples'):
         if "value" in f:
             f = AlphanumericFilter(**f)
             LOG.debug("Alphanumeric filter: %s %s %s", f.id, f.operator, f.value)
-            apply_alphanumeric_filter(query_conditions, f, unsupported_filters, scope)
+            query_conditions.append(apply_alphanumeric_filter(f, unsupported_filters, scope))
         elif "similarity" in f or "includeDescendantTerms" in f or _match_ids_to_ontologies(f["id"]):
             f = OntologyFilter(**f)
             LOG.debug("Ontology filter: %s", f.id)
-            apply_ontology_filter(query_conditions, f, unsupported_filters, scope)
+            query_conditions.append(apply_ontology_filter(f, unsupported_filters, scope))
         else:
             f = CustomFilter(**f)
             LOG.debug("Custom filter: %s", f.id)
-            apply_custom_filter(query_conditions, f, unsupported_filters, scope)
-    return query_conditions.values(), unsupported_filters
+            query_conditions.append(apply_custom_filter(f, unsupported_filters, scope))
+    return query_conditions, unsupported_filters
 
 
-def apply_ontology_filter(parameters: dict, filter_: OntologyFilter, unsupported_filters: List, scope='biosamples'):
+def apply_ontology_filter(filter_: OntologyFilter, unsupported_filters: List, scope='biosamples'):
     if isinstance(filter_.id, str):
         ontology_terms = [filter_.id]
     else:
         ontology_terms = filter_.id
+    parameter = None
     for ot in ontology_terms:
         try:
             curie_prefix, curie_reference = ot.split(':')
@@ -66,13 +67,15 @@ def apply_ontology_filter(parameters: dict, filter_: OntologyFilter, unsupported
                 parameter_type, code_system, code, extension = parameter_args['cql_parameter_class'], \
                     parameter_args['fhir_codesystem'], parameter_args['value'], parameter_args['extension']
 
-            parameter = _get_or_create_parameter(parameters, parameter_type, scope)
+            if parameter is None:
+                parameter = create_parameter(parameter_type, scope)
             parameter.add_condition_parameters(code=code, code_system=code_system, extension=extension)
         except KeyError:
             logging.error(f'Filter with ontology term {ot} is not supported')
+    return parameter
 
 
-def apply_alphanumeric_filter(parameters: dict, filter_: AlphanumericFilter, unsupported_filters: List,
+def apply_alphanumeric_filter(filter_: AlphanumericFilter, unsupported_filters: List,
                               scope='biosamples'):
     if type(filter_.value) in (str, int):
         values = [filter_.value]
@@ -82,7 +85,7 @@ def apply_alphanumeric_filter(parameters: dict, filter_: AlphanumericFilter, uns
     try:
         parameter_args = get_cql_condition_arguments_from_beacon_filter(filter_.id, unsupported_filters)
         parameter_type = parameter_args['cql_parameter_class']
-        parameter = _get_or_create_parameter(parameters, parameter_type, scope)
+        parameter = create_parameter(parameter_type, scope)
         for v in values:
             try:
                 parameter_value = parameter_args['values_mapper'](v)
@@ -95,16 +98,17 @@ def apply_alphanumeric_filter(parameters: dict, filter_: AlphanumericFilter, uns
                     parameter.add_condition_parameters(operator=filter_.operator, value=pv)
             else:
                 parameter.add_condition_parameters(operator=filter_.operator, value=parameter_value)
+        return parameter
     except KeyError:
         logging.error(f'Filter {values} is not supported')
 
 
-def apply_custom_filter(parameters: dict, filter_: CustomFilter, unsupported_filters: List, scope='biosamples'):
+def apply_custom_filter(filter_: CustomFilter, unsupported_filters: List, scope='biosamples'):
     if type(filter_.id) in (str, int):
         custom_terms = [filter_.id]
     else:
         custom_terms = filter_.id
-
+    parameter = None
     for ct in custom_terms:
         if ct.startswith('Orphanet_'):
             filter_spec = 'Orphanet_'
@@ -114,19 +118,15 @@ def apply_custom_filter(parameters: dict, filter_: CustomFilter, unsupported_fil
         try:
             parameter_args = get_cql_condition_arguments_from_beacon_filter(filter_spec, unsupported_filters)
             parameter_type = parameter_args['cql_parameter_class']
-
-            parameter = _get_or_create_parameter(parameters, parameter_type, scope)
+            if parameter is None:
+                parameter = create_parameter(parameter_type, scope)
             parameter.add_condition_parameters(code=ct, code_system=parameter_args.get('fhir_codesystem'))
         except KeyError:
             logging.error(f'Filter {ct} is not supported')
+    return parameter
 
 
-def _get_or_create_parameter(parameters: dict, parameter_type: str, scope='biosamples'):
+def create_parameter(parameter_type: str, scope='biosamples'):
     factory = get_cql_parameter_factory(parameter_type, scope)
-    try:
-        parameter = parameters[parameter_type]
-    except KeyError:
-        parameter = factory()
-        parameters[parameter_type] = parameter
-
+    parameter = factory()
     return parameter
