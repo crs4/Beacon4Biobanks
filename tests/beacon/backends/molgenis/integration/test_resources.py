@@ -3,7 +3,7 @@ import pytest
 from beacon.backends.molgenis.resources import get_resources
 from beacon.request.model import RequestMeta, RequestParams, RequestQuery, Granularity
 from beacon.schemas import get_default_schema
-from tests.integration.molgenis import COLLECTION_1_BIOBANK_1, COLLECTION_2_BIOBANK_1, \
+from tests.beacon.backends.molgenis.integration.consts import COLLECTION_1_BIOBANK_1, COLLECTION_2_BIOBANK_1, \
     COLLECTION_2_BIOBANK_3, COLLECTION_5_BIOBANK_4, COLLECTION_3_BIOBANK_1, COLLECTION_1_BIOBANK_2, \
     COLLECTION_2_BIOBANK_4, COLLECTION_4_BIOBANK_4
 
