@@ -6,7 +6,9 @@ from aiohttp.web_exceptions import HTTPBadRequest
 
 from beacon.backends.molgenis.mappers.filters import get_filter_spec
 from beacon.backends.molgenis.rsql.parameters import Parameter
+from beacon.backends.molgenis.utils import validate_disease_filter
 from beacon.request.model import AlphanumericFilter, CustomFilter, OntologyFilter
+
 
 LOG = logging.getLogger(__name__)
 
@@ -14,7 +16,7 @@ CURIE_REGEX = r'^([a-zA-Z0-9]*):\/?[a-zA-Z0-9.-_]*$'  # N.B. The dot (.) is allo
 
 
 def _match_ids_to_ontologies(id_: Union[str, list]):
-    if id_ is str:
+    if isinstance(id_, str):
         return re.match(CURIE_REGEX, id_)
     else:
         return all(re.match(CURIE_REGEX, i) for i in id_)
@@ -24,6 +26,9 @@ def apply_filters(filters: List[dict], scope='catalogs'):
     rsql_params = []
     unsupported_filters = []
     for f in filters:
+        if not validate_disease_filter(f['id']):
+            raise HTTPBadRequest(
+                text="Invalid query: different ontology specs combined in the same array for Disease filter parameter")
         LOG.debug('Processing filter %s', f['id'])
         if 'value' in f:
             f = AlphanumericFilter(**f)
@@ -53,16 +58,15 @@ def apply_filters(filters: List[dict], scope='catalogs'):
 
 
 def apply_ontology_filter(_filter: OntologyFilter):
-    ontology_terms = [_filter.id] if type(_filter.id) == str else _filter.id
+    ontology_terms = [_filter.id] if isinstance(_filter.id, str) else _filter.id
     unsupported_terms = []
     mapped_value = []
     attribute = None
     operator = None
 
     for i, ot in enumerate(ontology_terms):
-        filter_spec = get_filter_spec(ot)
-        if filter_spec == 'ejprd:Biobank':  # skip it but without marking it as unsupported
-            continue
+        curie_prefix, curie_value = ot.split(':')
+        filter_spec = get_filter_spec(curie_prefix, curie_value)
         if filter_spec is None:
             unsupported_terms.append(ot)
             continue
@@ -96,7 +100,7 @@ def apply_alphanumeric_filter(_filter: AlphanumericFilter):
 
 
 def apply_custom_filter(_filter: CustomFilter):
-    custom_terms = [_filter.id] if _filter.id is str else _filter.id
+    custom_terms = [_filter.id] if isinstance(_filter.id, str) else _filter.id
     unsupported_terms = []
     mapped_value = []
     attribute = None

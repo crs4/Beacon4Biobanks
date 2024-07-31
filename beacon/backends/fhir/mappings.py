@@ -89,7 +89,8 @@ _FILTERS = [{
 _UNSUPPORTED_FILTERS = [
     'sio:SIO_010056',
     'edam:data_2295',
-    'ncit:C124353'
+    'ncit:C124353',
+    'ncit:C83164'
 ]
 
 _FILTERS_TO_CQL = {

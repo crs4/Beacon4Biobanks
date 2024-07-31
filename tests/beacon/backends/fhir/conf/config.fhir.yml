@@ -1,0 +1,43 @@
+service:
+  backend: fhir
+  schemas: ejprd
+  default_beacon_granularity: count
+  max_beacon_granularity: count
+  default_number_of_items_per_request: 50
+  auth_key: null
+  documentation_url: "https://github.com/EGA-archive/beacon-2.x/"
+  environment: "prod"
+  entry_types:
+    - type: biosample
+      default_schema: "beacon-biosample-v2.0.0"
+    - type: individual
+      default_schema: "beacon-individual-v2.0.0"
+  legacy_filters_enabled: true
+ga4gh:
+  service_type_group: 'org.ga4gh'
+  service_type_artifact: 'beacon'
+  service_type_version: '1.0'
+beacon:
+  beacon_id: "beacon.samples.rd-connect.eu"
+  beacon_name: "Beacon of RD Connect Sample Catalogue "
+  api_version: "v2.0.0"
+  uri: "http://mobydick.crs4.it:5050/api/"
+organization:
+  id: "RD Connect"
+  name: "Sample Catalogue"
+  address: ""
+  description: ""
+  welcome_url: ""
+  contact_url: ""
+  logo_url: ""
+  info: ""
+project:
+  description: "RD Connect Project"
+  version: "2.0"
+  welcome_url: "https://rd-connect.eu/"
+  alternative_url: ""
+  create_datetime: ""
+  update_datetime: ""
+fhir:
+  url: "http://localhost:8089/fhir"
+idp:

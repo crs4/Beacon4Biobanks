@@ -1,13 +1,12 @@
+import jwt
 import logging
 import re
-from functools import partial
-from typing import Tuple
-
-import jwt
 # import aiohttp_csrf
 from aiohttp import web, hdrs
 from aiohttp.web_response import json_response
 from aiohttp_jwt.utils import invoke, check_request
+from functools import partial
+from typing import Tuple
 
 from beacon import conf
 
@@ -23,7 +22,7 @@ def handle_error(request, exc):
 
 
 async def build_error_response(ex):
-    return json_response({
+    return json_response(status=ex.status_code, data={
         'errorCode': ex.status_code,
         'errorMessage': ex.text
     })

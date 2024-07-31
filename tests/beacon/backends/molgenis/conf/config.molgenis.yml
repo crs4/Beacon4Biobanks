@@ -8,7 +8,7 @@ service:
   environment: "test"
   entry_types:
   - type: resource
-    default_schema: "ejprd-resources-v0.3"
+    default_schema: "ejprd-resources-v1.0.0"
 ga4gh:
   service_type_group: org.ga4gh
   service_type_artifact: beacon
@@ -34,7 +34,10 @@ project:
   create_datetime: ""
   update_datetime: ""
 molgenis:
-  url: "http://172.17.0.1:8080"
+  url: "http://localhost:8080"
   user: "admin"
   password: "admin"
   base_resource_url: "https://molgenis/#/collection"
+fhir:
+  url: "http://localhost:8089/fhir"
+idp:
