@@ -6,7 +6,9 @@ from aiohttp.web_exceptions import HTTPBadRequest
 
 from beacon.backends.molgenis.mappers.filters import get_filter_spec
 from beacon.backends.molgenis.rsql.parameters import Parameter
+from beacon.backends.molgenis.utils import validate_disease_filter
 from beacon.request.model import AlphanumericFilter, CustomFilter, OntologyFilter
+
 
 LOG = logging.getLogger(__name__)
 
@@ -24,6 +26,9 @@ def apply_filters(filters: List[dict], scope='catalogs'):
     rsql_params = []
     unsupported_filters = []
     for f in filters:
+        if not validate_disease_filter(f['id']):
+            raise HTTPBadRequest(
+                text="Invalid query: different ontology specs combined in the same array for Disease filter parameter")
         LOG.debug('Processing filter %s', f['id'])
         if 'value' in f:
             f = AlphanumericFilter(**f)

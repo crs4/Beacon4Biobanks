@@ -32,3 +32,9 @@ def get_collection_uri(collection_id):
         return get_url(conf.molgenis.alternative_base_resource_url, collection_id)
     else:
         return get_url(conf.molgenis.base_resource_url, collection_id)
+
+
+def validate_disease_filter(filter):
+    if isinstance(filter, str):
+        return True
+    return not any(f.startswith('ordo:') for f in filter) or not any(f.startswith('Orphanet_') for f in filter)

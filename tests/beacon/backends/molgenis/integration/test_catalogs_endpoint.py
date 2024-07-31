@@ -6,7 +6,8 @@ from tests.beacon.backends.molgenis.integration.fixtures import query_single_orp
     query_single_orphacode_string_v4, \
     query_multiple_orphacode_array_v3, query_multiple_orphacode_array_v4, query_multiple_orphacode_and_filters, \
     query_country, \
-    query_by_resource_type_with_unsupported_filters, query_unsupported_filters, query_empty_filter
+    query_by_resource_type_with_unsupported_filters, query_unsupported_filters, query_empty_filter, \
+    query_multiple_orphacodes_array_v3_v4_combined
 
 uri = f'{get_base_uri()}/api/catalogs'
 
@@ -91,3 +92,10 @@ def test_query_empty_filter(query_empty_filter):
     r = requests.post(url=uri, json=get_request_body(query_empty_filter['query']), verify=False)
     assert r.status_code == 400
     assert query_empty_filter['expected_error'] == json.loads(r.content)['errorMessage']
+
+
+def test_query_catalogs_multiple_orphacodes_array_v3_v4(query_multiple_orphacodes_array_v3_v4_combined):
+    r = requests.post(url=uri, json=get_request_body(query_multiple_orphacodes_array_v3_v4_combined['query']),
+                      verify=False)
+    assert r.status_code == 400
+    assert query_multiple_orphacodes_array_v3_v4_combined['expected_error'] == json.loads(r.content)['errorMessage']

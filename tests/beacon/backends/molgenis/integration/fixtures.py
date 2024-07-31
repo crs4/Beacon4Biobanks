@@ -85,6 +85,19 @@ def query_multiple_orphacode_and_filters():
     }
 
 @pytest.fixture(scope='session', autouse=True)
+def query_multiple_orphacodes_array_v3_v4_combined():
+    return {
+        'query': {
+            "filters": [
+                {"id": ["Orphanet_457260", "ordo:Orphanet_79241"]}
+            ]
+            , "requestedGranularity": "count"
+        },
+        'expected_error': "Invalid query: different ontology specs combined in the same array for Disease filter parameter"
+    }
+
+
+@pytest.fixture(scope='session', autouse=True)
 def query_country():
     return {
         "query": {
