@@ -519,7 +519,7 @@ def resource_type_patient_registry_filter():
         "query": {
             "filters": [
                 {
-                    "id": ["ejprd:PatienRegistry"]}
+                    "id": ["ejprd:PatientRegistry"]}
             ]
             , "requestedGranularity": "count"
         }

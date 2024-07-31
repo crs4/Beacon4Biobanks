@@ -29,7 +29,7 @@ def apply_filters(filters: List[dict], scope='biosamples'):
         if not validate_disease_filter(f['id']):
             raise HTTPBadRequest(
                 text="Invalid query: different ontology specs combined in the same array for Disease filter parameter")
-        if f['id'] in get_unsupported_filters():  # skip filter
+        if f['id'] in get_unsupported_filters() and f['id'] not in get_unsupported_filters():  # skip filter
             unsupported_filters.append(f['id'])
             continue
         if "value" in f:

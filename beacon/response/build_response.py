@@ -175,7 +175,7 @@ def build_beacon_count_response(data, num_total_results, qparams: RequestParams,
                     "countType": _get_count_type(entity_schema['entityType']),
 
                     'warnings': {
-                        'unsupported filters': unsupported_filters
+                        'unsupportedFilters': unsupported_filters
                     }
                 }
             }
