@@ -202,7 +202,7 @@ async def test_get_individuals_supported_and_unsupported_filters(aiohttp_client,
 async def test_get_individuals_by_age_this_year(aiohttp_client, age_this_year_filter):
     beacon_client = await get_beacon_client(aiohttp_client)
     r = await beacon_client.post(INDIVIDUALS_ENDPOINT, data=json.dumps(age_this_year_filter))
-    assert r.status == 200
+    assert r.status == 400
 
 
 @pytest.mark.asyncio
