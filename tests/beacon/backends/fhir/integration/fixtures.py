@@ -260,3 +260,25 @@ def query_empty_filter():
         },
         'expected_error': "No valid query params provided. At least one supported and valid parameter should be provided"
     }
+
+
+@pytest.fixture(scope='session', autouse=True)
+def query_age_of_diagnosis():
+    return {
+        "query": {
+            "filters": [
+                {
+                    "id": "ncit:C156420",
+                    "operator": ">=",
+                    "value": '0'
+                },
+                {
+                    "id": "ncit:C156420",
+                    "operator": "<=",
+                    "value": '95'
+                }
+            ]
+        },
+        'expected_biosamples_count': 2,
+        'expected_individuals_count': 1
+    }

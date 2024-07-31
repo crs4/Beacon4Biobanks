@@ -11,7 +11,7 @@ from tests.beacon.backends.fhir.integration.fixtures import query_single_orphaco
     query_unsupported_param, \
     query_both_supported_and_unsupported, query_disease_code_and_sex, query_sample_type_transcoded_to_single_code, \
     query_sample_type_transcoded_to_multiple_code, \
-    query_empty_filter
+    query_empty_filter, query_age_of_diagnosis
 
 uri = f'{get_base_uri()}/api/biosamples'
 headers = get_headers()
@@ -139,3 +139,11 @@ def test_query_biosamples_empty_filter(query_empty_filter):
     r = requests.post(url=uri, headers=headers, json=get_request_body(query_empty_filter['query']), verify=False)
     assert r.status_code == 400
     assert query_empty_filter['expected_error'] == json.loads(r.content)['errorMessage']
+
+
+def test_query_biosamples_by_age_of_diagnosis(query_age_of_diagnosis):
+    r = requests.post(url=uri, headers=headers, json=get_request_body(query_age_of_diagnosis['query']),
+                      verify=False)
+    assert r.status_code == 200
+    assert query_age_of_diagnosis['expected_biosamples_count'] == json.loads(r.content)['responseSummary'][
+        "numTotalResults"]
