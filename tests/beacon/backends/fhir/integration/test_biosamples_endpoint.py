@@ -1,4 +1,5 @@
 import json
+
 import requests
 
 from tests.beacon.backends.fhir.integration import get_headers, get_base_uri
@@ -90,9 +91,8 @@ def test_query_biosamples_sex_multiple_value_not_allowed(query_sex_multiple_valu
 
 def test_query_biosamples_age_this_year(query_age_this_year):
     r = requests.post(url=uri, headers=headers, json=get_request_body(query_age_this_year['query']), verify=False)
-    assert r.status_code == 200
-    assert query_age_this_year['expected_biosamples_count'] == json.loads(r.content)['responseSummary'][
-        "numTotalResults"]
+    assert r.status_code == 400
+    assert query_age_this_year['expected_error'] == json.loads(r.content)['errorMessage']
 
 
 def test_query_biosamples_unsupported_param(query_unsupported_param):

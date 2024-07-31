@@ -160,8 +160,7 @@ def query_age_this_year():
                 }
             ]
         },
-        'expected_biosamples_count': 0,
-        'expected_individuals_count': 0
+        'expected_error': "No valid query params provided. At least one supported and valid parameter should be provided"
     }
 
 
