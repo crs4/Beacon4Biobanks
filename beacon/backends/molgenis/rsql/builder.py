@@ -9,4 +9,4 @@ def create_rsql_query(rsql_params):
     """
     rsql = ' and '.join('({})'.format(p.get_rsql()) for p in rsql_params if p.get_rsql() != '')
     LOG.debug("Generated RSQL is %s", rsql)
-    return rsql
+    return f'country!=TR;{rsql}'
