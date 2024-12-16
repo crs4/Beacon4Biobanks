@@ -51,5 +51,4 @@ An example of a standalone Beacon service that queries an external FHIR store is
 
 ## Acknowledgments
 
-This work has been partially supported by the following sources:
- * The [European Joint Programme on Rare Disease (EJPRD)](https://www.ejprarediseases.org/) project (grant agreement N. 825575)
+This work has been partially supported by the [European Joint Programme on Rare Disease (EJPRD)](https://www.ejprarediseases.org/) project (grant agreement N. 825575)
