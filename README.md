@@ -49,5 +49,7 @@ An example of a standalone Beacon service that queries an external FHIR store is
 `docker run -e SERVER_NAME=beacon -e PORT=5050 -e SSL_ENABLED=false -v <conf-file>:/beacon/beacon/conf.py -p 5050:5050 crs4/beacon:2.0-fhir`
 
 
+## Acknowledgments
 
-
+This work has been partially supported by the following sources:
+ * The [European Joint Programme on Rare Disease (EJPRD)](https://www.ejprarediseases.org/) project (grant agreement N. 825575)
